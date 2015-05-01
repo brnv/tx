@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-ant debug
+rm -r ./bin/
+mkdir ./bin/
 
-adb install -r bin/telegramx-debug.apk
-
+ant debug && adb install -r bin/telegramx-debug.apk && \
 adb shell am start -a android.intent.action.MAIN \
     -n com.brnv.telegram/com.brnv.telegram.MainActivity
