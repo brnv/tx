@@ -2,6 +2,11 @@ package com.brnv.telegram;
 
 import android.app.Activity;
 import android.os.Bundle;
+
+import android.widget.Button;
+import android.widget.EditText;
+
+import android.view.View;
 import android.util.Log;
 
 import android.content.Context;
@@ -11,13 +16,29 @@ import org.drinkless.td.libcore.telegram.*;
 import org.drinkless.td.libcore.telegram.Client;
 import org.drinkless.td.libcore.telegram.TdApi.TLFunction;
 
-public class MainActivity extends Activity {
+public class RegistrationActivity extends Activity {
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.registration);
 
+        final Button registrationButton = (Button) findViewById(R.id.registration_button);
+
+        final EditText phoneNumber = (EditText) findViewById(R.id.phone_number);
+
+        registrationButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String number = phoneNumber.getText().toString();
+                if (RegistrationActivity.this.IsPhoneNumberValid(number)) {
+                    RegistrationActivity.this.ProcessRegistration(number);
+                };
+            }
+        });
+    }
+
+    private void ProcessRegistration(String number) {
         MyHandler handler = new MyHandler();
 
         TG.setUpdatesHandler(handler);
@@ -29,7 +50,8 @@ public class MainActivity extends Activity {
 
         Client client = TG.getClientInstance();
 
-        TLFunction setPhoneNumber = new TdApi.AuthSetPhoneNumber("+79231710953");
+        TLFunction setPhoneNumber = new TdApi.AuthSetPhoneNumber(number);
+
         client.send(setPhoneNumber, handler);
     }
 
@@ -38,5 +60,10 @@ public class MainActivity extends Activity {
             Log.v("!!!", object.getClass().toString());
             Log.v("!!!", object.toString());
         }
+    }
+
+    private boolean IsPhoneNumberValid(String number) {
+        //@TODO: implement later
+        return true;
     }
 }
