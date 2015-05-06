@@ -7,16 +7,16 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import android.view.View;
-import android.util.Log;
-
-import android.content.Context;
-import java.io.File;
 
 import org.drinkless.td.libcore.telegram.*;
 import org.drinkless.td.libcore.telegram.Client;
 import org.drinkless.td.libcore.telegram.TdApi.TLFunction;
 
+import android.content.Intent;
+
 public class RegistrationActivity extends Activity {
+
+	Intent telegramCodeIntent;
 
     /** Called when the activity is first created. */
     @Override
@@ -24,45 +24,55 @@ public class RegistrationActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.registration);
 
-        final Button registrationButton = (Button) findViewById(R.id.registration_button);
+		this.initRegistrationButton();
 
-        final EditText phoneNumber = (EditText) findViewById(R.id.phone_number);
+		telegramCodeIntent = new Intent(this, TelegramCodeActivity.class);
+    }
+
+    public class SubmitPhoneResultHandler implements Client.ResultHandler {
+        public void onResult(TdApi.TLObject object) {
+			//@TODO: errors checking?
+			startActivity(telegramCodeIntent);
+        }
+    }
+
+    private void initRegistrationButton() {
+        Button
+			registrationButton = (Button) findViewById(R.id.button_register);
 
         registrationButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String number = phoneNumber.getText().toString();
-                if (RegistrationActivity.this.IsPhoneNumberValid(number)) {
-                    RegistrationActivity.this.ProcessRegistration(number);
-                };
+				v.setEnabled(false);
+				RegistrationActivity.this.submitPhone();
             }
         });
     }
 
-    private void ProcessRegistration(String number) {
-        MyHandler handler = new MyHandler();
+    private void submitPhone() {
+		String number = this.getPhoneNumber();
+
+		if (RegistrationActivity.this.IsPhoneValid(number) == false) {
+			return ;
+		}
+
+        SubmitPhoneResultHandler
+			handler = new SubmitPhoneResultHandler();
 
         TG.setUpdatesHandler(handler);
 
-        Context context = this.getApplicationContext();
-        File cacheDir = context.getCacheDir();
+        TLFunction setPhone = new TdApi.AuthSetPhoneNumber(number);
 
-        TG.setDir(cacheDir.toString());
-
-        Client client = TG.getClientInstance();
-
-        TLFunction setPhoneNumber = new TdApi.AuthSetPhoneNumber(number);
-
-        client.send(setPhoneNumber, handler);
+        TG.getClientInstance().send(setPhone, handler);
     }
 
-    public class MyHandler implements Client.ResultHandler {
-        public void onResult(TdApi.TLObject object) {
-            Log.v("!!!", object.getClass().toString());
-            Log.v("!!!", object.toString());
-        }
-    }
+	private String getPhoneNumber() {
+		EditText
+			phoneNumberInput = (EditText) findViewById(R.id.input_phone);
 
-    private boolean IsPhoneNumberValid(String number) {
+		return phoneNumberInput.getText().toString();
+	}
+
+    private boolean IsPhoneValid(String number) {
         //@TODO: implement later
         return true;
     }

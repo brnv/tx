@@ -4,24 +4,23 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        tools:context=".RegistrationActivity" >
+        tools:context=".TelegramCodeActivity" >
 
     <TextView
-            android:id="@+id/text_phone"
+            android:id="@+id/text_code"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Enter your phone number:" />
+            android:text="Enter telegram code:" />
 
     <EditText
-            android:id="@+id/input_phone"
+            android:id="@+id/input_telegram_code"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="+79231710953"
-            android:inputType="phone" />
+            android:inputType="number" />
 
-    <Button android:id="@+id/button_register"
+    <Button android:id="@+id/button_submit_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Register"/>
+            android:text="Submit code"/>
 
 </LinearLayout>
