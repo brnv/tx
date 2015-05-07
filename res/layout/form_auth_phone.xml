@@ -4,7 +4,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        tools:context=".RegistrationActivity" >
+        tools:context=".AuthorizationActivity" >
 
     <TextView
             android:id="@+id/text_phone"
@@ -19,9 +19,9 @@
             android:text="+79231710953"
             android:inputType="phone" />
 
-    <Button android:id="@+id/button_register"
+    <Button android:id="@+id/button_set_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Register"/>
+            android:text="Set phone"/>
 
 </LinearLayout>
