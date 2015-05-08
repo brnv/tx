@@ -1,6 +1,7 @@
 package com.brnv.telegram;
 
 import org.drinkless.td.libcore.telegram.*;
+import org.drinkless.td.libcore.telegram.TdApi.TLFunction;
 
 import android.util.Log;
 
@@ -14,6 +15,12 @@ public class TdApiResultHandler implements Client.ResultHandler {
         }
 
         return mInstance;
+    }
+
+    public void Send(TLFunction function) {
+        TG.getClientInstance().send(
+            function, this
+        );
     }
 
     public void onResult(TdApi.TLObject object) {
@@ -32,6 +39,10 @@ public class TdApiResultHandler implements Client.ResultHandler {
 
         case "AuthStateWaitSetCode":
             AuthorizationActivity.instance.SetCode();
+            break;
+
+        case "Error":
+            Log.v("!!! error: ", object.toString());
             break;
         }
     }

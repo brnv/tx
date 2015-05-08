@@ -3,36 +3,39 @@ package com.brnv.telegram;
 import android.app.Activity;
 import android.os.Bundle;
 
-import android.widget.Button;
-import android.widget.EditText;
-
 import android.view.View;
 
-import java.io.File;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ViewFlipper;
 
 import android.util.Log;
 
+import java.io.File;
+
 import org.drinkless.td.libcore.telegram.*;
-import org.drinkless.td.libcore.telegram.TdApi.TLFunction;
 
 public class AuthorizationActivity extends Activity {
 
     public static AuthorizationActivity instance;
 
+    public ViewFlipper viewFlipper;
+
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.authorization);
 
         instance = this;
+        viewFlipper = (ViewFlipper) findViewById(R.id.authorization_views);
 
         this.initTG();
 
-        TLFunction getAuth = new TdApi.AuthGetState();
+        Log.v("!!!", "td authorization");
 
-        TG.getClientInstance().send(
-            getAuth, TdApiResultHandler.getInstance()
-        );
+        TdApiResultHandler.getInstance().Send(new TdApi.AuthGetState());
     }
 
     private void initTG() {
@@ -43,9 +46,14 @@ public class AuthorizationActivity extends Activity {
     }
 
     public void SetPhoneNumber() {
-        Log.v("!!!", "set phone");
+        Log.v("!!!", "phone number form");
 
-        setContentView(R.layout.form_auth_phone);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AuthorizationActivity.instance.viewFlipper.setDisplayedChild(0);
+            }
+        });
 
         Button
             setPhoneButton = (Button) findViewById(R.id.button_set_phone);
@@ -54,27 +62,73 @@ public class AuthorizationActivity extends Activity {
             public void onClick(View v) {
                 v.setEnabled(false);
 
-                Registration registration = Registration.getInstance();
-
                 EditText
                     phoneNumberInput = (EditText) findViewById(R.id.input_phone);
                 String phoneNumber = phoneNumberInput.getText().toString();
 
-                registration.SubmitPhone(phoneNumber);
+                Registration.getInstance().SubmitPhone(phoneNumber);
             }
         });
     }
 
     public void SetName() {
-        Log.v("!!!", "set name");
+        Log.v("!!!", "name form");
 
-        setContentView(R.layout.form_auth_name);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AuthorizationActivity.instance.viewFlipper.setDisplayedChild(1);
+            }
+        });
+
+        Button
+            setNameButton = (Button) findViewById(R.id.button_set_name);
+
+        setNameButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                v.setEnabled(false);
+
+                EditText
+                    firstNameInput = (EditText) findViewById(R.id.input_first_name);
+
+                String firstName = firstNameInput.getText().toString();
+
+                EditText
+                    lastNameInput = (EditText) findViewById(R.id.input_last_name);
+
+                String lastName = lastNameInput.getText().toString();
+
+                Registration.getInstance().SubmitName(firstName, lastName);
+            }
+        });
     }
 
     public void SetCode() {
-        Log.v("!!!", "set code");
+        Log.v("!!!", "code form");
 
-        setContentView(R.layout.form_auth_code);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AuthorizationActivity.instance.viewFlipper.setDisplayedChild(2);
+            }
+        });
+
+        Button
+            setCodeButton = (Button) findViewById(R.id.button_submit_code);
+
+        setCodeButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                v.setEnabled(false);
+
+                EditText
+                    codeInput = (EditText) findViewById(R.id.input_telegram_code);
+
+                String code = codeInput.getText().toString();
+
+                Registration.getInstance().SubmitCode(code);
+            }
+        });
+
     }
 
     public void onPause() {
