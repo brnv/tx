@@ -29,6 +29,10 @@ public class TdApiResultHandler implements Client.ResultHandler {
 
         switch (object.getClass().getSimpleName()) {
 
+        case "AuthStateOk":
+            AuthorizationActivity.instance.StartContactsActivity();
+            break;
+
         case "AuthStateWaitSetPhoneNumber":
             AuthorizationActivity.instance.SetPhoneNumber();
             break;

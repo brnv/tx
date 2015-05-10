@@ -11,6 +11,8 @@ import android.widget.ViewFlipper;
 
 import android.util.Log;
 
+import android.content.Intent;
+
 import java.io.File;
 
 import org.drinkless.td.libcore.telegram.*;
@@ -134,5 +136,18 @@ public class AuthorizationActivity extends Activity {
     public void onPause() {
         super.onPause();
         this.finish();
+    }
+
+    public void StartContactsActivity() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(
+                    AuthorizationActivity.instance, ContactsActivity.class
+                );
+
+                startActivity(intent);
+            }
+        });
     }
 }
