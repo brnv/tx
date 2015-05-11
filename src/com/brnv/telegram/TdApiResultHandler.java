@@ -45,6 +45,10 @@ public class TdApiResultHandler implements Client.ResultHandler {
             AuthorizationActivity.instance.SetCode();
             break;
 
+        case "Contacts":
+            ContactsActivity.instance.ListContacts((TdApi.Contacts) object);
+            break;
+
         case "Error":
             Log.v("!!! error: ", object.toString());
             break;
