@@ -150,4 +150,18 @@ public class AuthorizationActivity extends Activity {
             }
         });
     }
+
+    public void StartChatActivity() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(
+                    AuthorizationActivity.instance, ChatActivity.class
+                );
+
+                startActivity(intent);
+            }
+        });
+    }
+
 }

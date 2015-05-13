@@ -30,7 +30,7 @@ public class TdApiResultHandler implements Client.ResultHandler {
         switch (object.getClass().getSimpleName()) {
 
         case "AuthStateOk":
-            AuthorizationActivity.instance.StartContactsActivity();
+            AuthorizationActivity.instance.StartChatActivity();
             break;
 
         case "AuthStateWaitSetPhoneNumber":
@@ -51,6 +51,11 @@ public class TdApiResultHandler implements Client.ResultHandler {
 
         case "Error":
             Log.v("!!! error: ", object.toString());
+            break;
+
+        case "Chat":
+            TdApi.Chat chat = (TdApi.Chat) object;
+            ChatActivity.instance.ShowChat();
             break;
         }
     }
