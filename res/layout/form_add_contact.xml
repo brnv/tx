@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+    <TextView
+            android:id="@+id/text_contact_first_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="First name:" />
+
+    <EditText
+            android:id="@+id/input_contact_first_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+
+    <TextView
+            android:id="@+id/text_contact_last_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Last name:" />
+
+    <EditText
+            android:id="@+id/input_contact_last_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+
+    <TextView
+            android:id="@+id/text_contact_phone"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Phone number:" />
+
+    <EditText
+            android:id="@+id/input_contact_phone"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="phone" />
+
+    <Button android:id="@+id/button_add_contact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add"/>
+
+</LinearLayout>

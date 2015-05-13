@@ -5,4 +5,16 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical">
+
+    <ViewFlipper
+            android:id="@+id/contacts_views"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <include android:id="@+id/list_contacts_view" layout="@layout/list_contacts" />
+
+        <include android:id="@+id/add_contact_view" layout="@layout/form_add_contact" />
+
+    </ViewFlipper>
+
 </LinearLayout>
