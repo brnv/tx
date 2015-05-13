@@ -4,26 +4,28 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import org.drinkless.td.libcore.telegram.*;
+import org.drinkless.td.libcore.telegram.TdApi.MessageText;
 
 import android.widget.Button;
-
 import android.view.View;
-
 import android.util.Log;
-
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.RelativeLayout;
-
+import android.view.MenuInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.LinearLayout.LayoutParams;
+
+import android.widget.ViewFlipper;
 
 public class ChatActivity extends Activity {
 
     public static ChatActivity instance;
 
-    long chatId;
+    public ViewFlipper viewFlipper;
 
     /** Called when the activity is first created. */
     @Override
@@ -32,14 +34,73 @@ public class ChatActivity extends Activity {
         setContentView(R.layout.chat);
 
         instance = this;
+        viewFlipper = (ViewFlipper) findViewById(R.id.chat_activity_views);
 
-        this.chatId = 0;
-
-        ChatActivity.instance.ShowChat();
-        //TdApiResultHandler.getInstance().Send(new TdApi.GetChat(this.chatId));
+        TdApiResultHandler.getInstance().Send(new TdApi.GetChats(0, 1));
     }
 
-    public void ShowChat() {
+    private void showChatListScreen() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getActionBar().setTitle("Chats");
+                getActionBar().setDisplayHomeAsUpEnabled(false);
+                ChatActivity.instance.viewFlipper.setDisplayedChild(0);
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+         switch (item.getItemId()) {
+        case android.R.id.home:
+            ChatActivity.instance.showChatListScreen();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void ListChats(TdApi.Chats chats) {
+        ChatActivity.instance.showChatListScreen();
+
+        for (int i = 0; i < chats.chats.length; i++)
+        {
+            final TdApi.Chat chat = chats.chats[i];
+
+            TextView
+                chatEntryView = new TextView(ChatActivity.instance);
+
+            TdApi.PrivateChatInfo chatInfo = (TdApi.PrivateChatInfo) chat.type;
+            TdApi.User user = chatInfo.user;
+
+            chatEntryView.setText(user.firstName + " " + user.lastName);
+
+            chatEntryView.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    TdApiResultHandler.getInstance().Send(
+                        new TdApi.GetChat(chat.id)
+                    );
+                }
+            });
+
+            this.addViewToLayout(R.id.layout_chat_list, chatEntryView);
+        }
+    }
+
+    public void ShowChat(final TdApi.Chat chat) {
+        TdApi.PrivateChatInfo chatInfo = (TdApi.PrivateChatInfo) chat.type;
+        final TdApi.User user = chatInfo.user;
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getActionBar().setTitle(user.firstName + " " + user.lastName);
+                getActionBar().setDisplayHomeAsUpEnabled(true);
+                ChatActivity.instance.viewFlipper.setDisplayedChild(1);
+            }
+        });
+
         Button
             sendMessageButton = (Button) findViewById(R.id.button_send_message);
 
@@ -48,26 +109,39 @@ public class ChatActivity extends Activity {
                 EditText
                     messageInput = (EditText) findViewById(R.id.input_message);
 
-                String message = messageInput.getText().toString();
+                TdApi.InputMessageText message = new TdApi.InputMessageText();
+
+                message.text = messageInput.getText().toString();
 
                 messageInput.setText("");
 
-                ChatActivity.instance.ShowMessage(message);
+                TdApiResultHandler.getInstance().Send(
+                    new TdApi.SendMessage(chat.id, message)
+                );
             }
         });
     }
 
-    public void ShowMessage(final String message) {
-        runOnUiThread(new Runnable() {
+    public void ShowMessage(TdApi.Message message) {
+        switch (message.message.getClass().getSimpleName()) {
+            case "MessageText":
+                TextView
+                    messageView = new TextView(ChatActivity.instance);
+                TdApi.MessageText messageText = (TdApi.MessageText) message.message;
+                messageView.setText(messageText.text);
+                this.addViewToLayout(R.id.chat_messages_view, messageView);
+                break;
+        }
+    }
+
+    private void addViewToLayout(final int layoutId, final View view) {
+         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                final TextView messageView = new TextView(ChatActivity.instance);
-                messageView.setText(message);
-
                 LinearLayout
-                    rootLayout = (LinearLayout) findViewById(R.id.layout_chat);
+                    rootLayout = (LinearLayout) findViewById(layoutId);
 
-                rootLayout.addView(messageView);
+                rootLayout.addView(view);
             }
         });
     }

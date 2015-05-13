@@ -6,10 +6,6 @@ import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import android.view.LayoutInflater;
-
-import android.content.Context;
-
 import android.view.MenuInflater;
 import android.view.Menu;
 import android.view.MenuItem;

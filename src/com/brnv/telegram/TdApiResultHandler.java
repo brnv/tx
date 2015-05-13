@@ -53,9 +53,25 @@ public class TdApiResultHandler implements Client.ResultHandler {
             Log.v("!!! error: ", object.toString());
             break;
 
+        case "User":
+            TdApi.User user = (TdApi.User) object;
+            Log.v("!!! user: ", user.toString());
+            break;
+
         case "Chat":
             TdApi.Chat chat = (TdApi.Chat) object;
-            ChatActivity.instance.ShowChat();
+            ChatActivity.instance.ShowChat(chat);
+            break;
+
+        case "Chats":
+            TdApi.Chats chats = (TdApi.Chats) object;
+            ChatActivity.instance.ListChats(chats);
+            break;
+
+        case "UpdateNewMessage":
+            TdApi.UpdateNewMessage messageObject = (TdApi.UpdateNewMessage) object;
+            TdApi.Message message = messageObject.message;
+            ChatActivity.instance.ShowMessage(message);
             break;
         }
     }
