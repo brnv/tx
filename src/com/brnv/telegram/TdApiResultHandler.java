@@ -59,8 +59,13 @@ public class TdApiResultHandler implements Client.ResultHandler {
             break;
 
         case "Chat":
-            TdApi.Chat chat = (TdApi.Chat) object;
-            ChatActivity.instance.ShowChat(chat);
+            //TdApi.Chat chat = (TdApi.Chat) object;
+            //ChatActivity.instance.ShowChat(chat);
+            break;
+
+        case "Messages":
+            TdApi.Messages messages = (TdApi.Messages) object;
+            ChatActivity.instance.ShowChat(messages);
             break;
 
         case "Chats":

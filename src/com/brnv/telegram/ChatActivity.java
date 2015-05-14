@@ -36,7 +36,7 @@ public class ChatActivity extends Activity {
         instance = this;
         viewFlipper = (ViewFlipper) findViewById(R.id.chat_activity_views);
 
-        TdApiResultHandler.getInstance().Send(new TdApi.GetChats(0, 1));
+        TdApiResultHandler.getInstance().Send(new TdApi.GetChats(0, 3));
     }
 
     private void showChatListScreen() {
@@ -65,8 +65,7 @@ public class ChatActivity extends Activity {
     public void ListChats(TdApi.Chats chats) {
         ChatActivity.instance.showChatListScreen();
 
-        for (int i = 0; i < chats.chats.length; i++)
-        {
+        for (int i = 0; i < chats.chats.length; i++) {
             final TdApi.Chat chat = chats.chats[i];
 
             TextView
@@ -80,8 +79,21 @@ public class ChatActivity extends Activity {
             chatEntryView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     TdApiResultHandler.getInstance().Send(
-                        new TdApi.GetChat(chat.id)
+                        new TdApi.GetChatHistory(chat.id, chat.topMessage.id, 0, 1000)
                     );
+
+                    TdApi.PrivateChatInfo chatInfo = (TdApi.PrivateChatInfo) chat.type;
+                    final TdApi.User user = chatInfo.user;
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            getActionBar().setTitle(user.firstName + " " + user.lastName);
+                            getActionBar().setHomeButtonEnabled(true);
+                            getActionBar().setDisplayHomeAsUpEnabled(true);
+                            ChatActivity.instance.viewFlipper.setDisplayedChild(1);
+                        }
+                    });
                 }
             });
 
@@ -89,17 +101,20 @@ public class ChatActivity extends Activity {
         }
     }
 
-    public void ShowChat(final TdApi.Chat chat) {
-        TdApi.PrivateChatInfo chatInfo = (TdApi.PrivateChatInfo) chat.type;
-        final TdApi.User user = chatInfo.user;
+    public void ShowChat(final TdApi.Messages messages) {
+        final long chatId = messages.messages[0].chatId;
+
+        final LinearLayout
+            chatContentView = (LinearLayout) findViewById(R.id.chat_messages_view);
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                getActionBar().setTitle(user.firstName + " " + user.lastName);
-                getActionBar().setHomeButtonEnabled(true);
-                getActionBar().setDisplayHomeAsUpEnabled(true);
-                ChatActivity.instance.viewFlipper.setDisplayedChild(1);
+                chatContentView.removeAllViews();
+
+                for (int i = messages.messages.length - 1; i >= 0 ; i--) {
+                    ChatActivity.instance.ShowMessage(messages.messages[i]);
+                }
             }
         });
 
@@ -118,7 +133,7 @@ public class ChatActivity extends Activity {
                 messageInput.setText("");
 
                 TdApiResultHandler.getInstance().Send(
-                    new TdApi.SendMessage(chat.id, message)
+                    new TdApi.SendMessage(chatId, message)
                 );
             }
         });
