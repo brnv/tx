@@ -44,6 +44,7 @@ public class ChatActivity extends Activity {
             @Override
             public void run() {
                 getActionBar().setTitle("Chats");
+                getActionBar().setHomeButtonEnabled(false);
                 getActionBar().setDisplayHomeAsUpEnabled(false);
                 ChatActivity.instance.viewFlipper.setDisplayedChild(0);
             }
@@ -96,6 +97,7 @@ public class ChatActivity extends Activity {
             @Override
             public void run() {
                 getActionBar().setTitle(user.firstName + " " + user.lastName);
+                getActionBar().setHomeButtonEnabled(true);
                 getActionBar().setDisplayHomeAsUpEnabled(true);
                 ChatActivity.instance.viewFlipper.setDisplayedChild(1);
             }
