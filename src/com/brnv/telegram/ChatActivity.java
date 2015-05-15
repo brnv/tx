@@ -22,6 +22,8 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.ViewFlipper;
 
+import se.marteinn.ui.InteractiveScrollView;
+
 public class ChatActivity extends Activity {
 
     public static ChatActivity instance;
@@ -29,6 +31,9 @@ public class ChatActivity extends Activity {
     public ViewFlipper viewFlipper;
 
     public TdApi.Chats chats;
+
+    static public int defaultMessagesLimit = 20;
+    static public int defaultMessagesUpdateLimit = 8;
 
     public TdApi.Chat currentChat;
 
@@ -39,12 +44,15 @@ public class ChatActivity extends Activity {
         setContentView(R.layout.chat);
 
         instance = this;
+
         viewFlipper = (ViewFlipper) findViewById(R.id.chat_activity_views);
 
         TdApiResultHandler.getInstance().Send(new TdApi.GetChats(0, 3));
     }
 
     private void showChatListScreen() {
+        ChatActivity.instance.currentChat = null;
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -96,7 +104,9 @@ public class ChatActivity extends Activity {
             chatEntryView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     TdApiResultHandler.getInstance().Send(
-                        new TdApi.GetChatHistory(chat.id, chat.topMessage.id, 0, 1000)
+                        new TdApi.GetChatHistory(
+                            chat.id, chat.topMessage.id, 0,
+                            ChatActivity.defaultMessagesLimit)
                     );
                 }
             });
@@ -121,6 +131,11 @@ public class ChatActivity extends Activity {
     }
 
     public void ShowChat(final TdApi.Messages messages) {
+        Log.v("!!!", messages.toString());
+        if (messages.messages.length == 0) {
+            return ;
+        }
+
         final long chatId = messages.messages[0].chatId;
 
         for (int i = 0; i < ChatActivity.instance.chats.chats.length; i++) {
@@ -146,6 +161,39 @@ public class ChatActivity extends Activity {
                     );
 
                     ChatActivity.instance.addViewToLayout(chatContentView, messageView);
+                }
+
+                final InteractiveScrollView
+                    chatScrollView = (InteractiveScrollView) findViewById(R.id.chat_scroll_view);
+
+                if (messages.messages.length <= ChatActivity.defaultMessagesLimit) {
+                    chatScrollView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            chatScrollView.fullScroll(View.FOCUS_DOWN);
+                        }
+                    });
+                }
+
+                if (messages.messages.length < ChatActivity.defaultMessagesLimit) {
+                    chatScrollView.setOnTopReachedListener(null);
+                } else {
+                    chatScrollView.setOnTopReachedListener(
+                        new InteractiveScrollView.OnTopReachedListener() {
+                            @Override
+                            public void onTopReached() {
+                                int nextChunkSize =
+                                    messages.messages.length + ChatActivity.defaultMessagesUpdateLimit;
+
+                                TdApiResultHandler.getInstance().Send(
+                                    new TdApi.GetChatHistory(
+                                        ChatActivity.instance.currentChat.id,
+                                        ChatActivity.instance.currentChat.topMessage.id, 0,
+                                        nextChunkSize)
+                                );
+                            }
+                        }
+                    );
                 }
             }
         });

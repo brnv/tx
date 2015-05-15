@@ -4,12 +4,13 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical">
 
-    <ScrollView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:fillViewport="true">
+	<se.marteinn.ui.InteractiveScrollView
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			xmlns:android="http://schemas.android.com/apk/res/android"
+			android:layout_weight="1"
+			android:id="@+id/chat_scroll_view"
+			android:fillViewport="true">
 
         <LinearLayout
                 android:id="@+id/chat_messages_view"
@@ -75,7 +76,7 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </se.marteinn.ui.InteractiveScrollView>
 
     <LinearLayout
             android:background="@drawable/top_border"
