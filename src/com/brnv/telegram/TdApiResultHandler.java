@@ -76,7 +76,11 @@ public class TdApiResultHandler implements Client.ResultHandler {
         case "UpdateNewMessage":
             TdApi.UpdateNewMessage messageObject = (TdApi.UpdateNewMessage) object;
             TdApi.Message message = messageObject.message;
-            ChatActivity.instance.ShowMessage(message);
+
+            if (ChatActivity.instance.currentChat.id == message.chatId) {
+                ChatActivity.instance.ShowMessage(message);
+            }
+
             break;
         }
     }

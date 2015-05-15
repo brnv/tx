@@ -13,46 +13,102 @@
 
         <LinearLayout
                 android:id="@+id/chat_messages_view"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+            <LinearLayout
+                    android:paddingTop="5dp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                <!--<ImageView-->
+                <!--        android:layout_width="fill_parent"-->
+                <!--        android:layout_height="wrap_content"-->
+                <!--        android:layout_weight="3" />-->
+
+                <!--<LinearLayout-->
+                <!--        android:layout_width="fill_parent"-->
+                <!--        android:layout_height="wrap_content"-->
+                <!--        android:layout_weight="1"-->
+                <!--        android:orientation="vertical">-->
+
+                <!--    <LinearLayout-->
+                <!--            android:layout_width="fill_parent"-->
+                <!--            android:layout_height="fill_parent"-->
+                <!--            android:layout_weight="1"-->
+                <!--            android:orientation="horizontal">-->
+
+                <!--        <TextView-->
+                <!--                android:layout_width="wrap_content"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:paddingRight="5dp"-->
+                <!--                android:text="Spike Spiegel" />-->
+
+                <!--        <TextView-->
+                <!--                android:layout_width="wrap_content"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:text="2:09 AM" />-->
+
+                <!--    </LinearLayout>-->
+
+                <!--    <LinearLayout-->
+                <!--            android:paddingTop="5dp"-->
+                <!--            android:paddingBottom="10dp"-->
+                <!--            android:layout_width="fill_parent"-->
+                <!--            android:layout_height="fill_parent"-->
+                <!--            android:layout_weight="1"-->
+                <!--            android:orientation="horizontal">-->
+
+                <!--        <TextView-->
+                <!--                android:layout_width="fill_parent"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:text="Hey Ed!" />-->
+
+
+                <!--    </LinearLayout>-->
+
+                <!--</LinearLayout>-->
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </ScrollView>
 
-        <LinearLayout
-                android:background="@drawable/bkg"
-                android:id="@+id/chat_footer"
+    <LinearLayout
+            android:background="@drawable/top_border"
+            android:id="@+id/chat_footer"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true">
+
+        <Button android:id="@+id/button_emoji"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_alignParentBottom="true">
+                android:layout_weight="3"
+                android:layout_marginTop="5dp"
+                android:text="E" />
 
-            <Button android:id="@+id/button_emoji"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:layout_marginTop="5dp"
-                    android:text="E" />
+        <EditText
+                android:id="@+id/input_message"
+                android:hint="Message"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="5dp"
+                android:inputType="text" />
 
-            <EditText
-                    android:id="@+id/input_message"
-                    android:hint="Message"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginTop="5dp"
-                    android:inputType="text" />
+        <Button android:id="@+id/button_send_message"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_marginTop="5dp"
+                android:text="S" />
 
-            <Button android:id="@+id/button_send_message"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:layout_marginTop="5dp"
-                    android:text="S" />
-
-        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
 
