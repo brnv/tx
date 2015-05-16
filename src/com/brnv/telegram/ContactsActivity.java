@@ -25,7 +25,6 @@ public class ContactsActivity extends Activity {
 
     public ViewFlipper viewFlipper;
 
-    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +66,7 @@ public class ContactsActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                getActionBar().setTitle("");
+                getActionBar().setTitle("New contact");
                 getActionBar().setDisplayHomeAsUpEnabled(true);
                 ContactsActivity.instance.viewFlipper.setDisplayedChild(1);
             }

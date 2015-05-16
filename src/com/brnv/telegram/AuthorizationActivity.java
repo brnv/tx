@@ -9,8 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ViewFlipper;
 
-import android.util.Log;
-
 import android.content.Intent;
 
 import java.io.File;
@@ -23,8 +21,11 @@ public class AuthorizationActivity extends Activity {
 
     public ViewFlipper viewFlipper;
 
+    public Intent contactsActivityIntent;
 
-    /** Called when the activity is first created. */
+    public Intent chatActivityIntent;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,9 +34,12 @@ public class AuthorizationActivity extends Activity {
         instance = this;
         viewFlipper = (ViewFlipper) findViewById(R.id.authorization_views);
 
+        contactsActivityIntent =  new Intent(this, ContactsActivity.class);
+        chatActivityIntent = new Intent(this, ChatActivity.class);
+
         this.initTG();
 
-        Log.v("!!!", "td authorization");
+        setTitle("Authorization");
 
         TdApiResultHandler.getInstance().Send(new TdApi.AuthGetState());
     }
@@ -48,8 +52,6 @@ public class AuthorizationActivity extends Activity {
     }
 
     public void SetPhoneNumber() {
-        Log.v("!!!", "phone number form");
-
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -74,8 +76,6 @@ public class AuthorizationActivity extends Activity {
     }
 
     public void SetName() {
-        Log.v("!!!", "name form");
-
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -106,8 +106,6 @@ public class AuthorizationActivity extends Activity {
     }
 
     public void SetCode() {
-        Log.v("!!!", "code form");
-
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -133,20 +131,11 @@ public class AuthorizationActivity extends Activity {
 
     }
 
-    public void onPause() {
-        super.onPause();
-        this.finish();
-    }
-
     public void StartContactsActivity() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(
-                    AuthorizationActivity.instance, ContactsActivity.class
-                );
-
-                startActivity(intent);
+                startActivity(AuthorizationActivity.instance.contactsActivityIntent);
             }
         });
     }
@@ -155,13 +144,13 @@ public class AuthorizationActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(
-                    AuthorizationActivity.instance, ChatActivity.class
-                );
-
-                startActivity(intent);
+                startActivity(AuthorizationActivity.instance.chatActivityIntent);
             }
         });
     }
 
+    public void onPause() {
+        super.onPause();
+        this.finish();
+    }
 }
