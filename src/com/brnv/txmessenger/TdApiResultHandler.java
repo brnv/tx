@@ -48,6 +48,16 @@ public class TdApiResultHandler implements Client.ResultHandler {
             Log.v("!!! error: ", result.toString());
             break;
 
+        case "Chats":
+            TdApi.Chats chats = (TdApi.Chats) result;
+            ChatsActivity.instance.ShowChats(chats);
+            break;
+
+        case "Messages":
+            TdApi.Messages messages = (TdApi.Messages) result;
+            ChatsActivity.instance.ShowChat(messages);
+            break;
+
         //case "Contacts":
         //    ContactsActivity.instance.ListContacts((TdApi.Contacts) result);
         //    break;
@@ -60,16 +70,6 @@ public class TdApiResultHandler implements Client.ResultHandler {
         //case "Chat":
         //    //TdApi.Chat chat = (TdApi.Chat) result;
         //    //ChatActivity.instance.ShowChat(chat);
-        //    break;
-
-        //case "Messages":
-        //    TdApi.Messages messages = (TdApi.Messages) result;
-        //    ChatActivity.instance.ShowChat(messages);
-        //    break;
-
-        //case "Chats":
-        //    TdApi.Chats chats = (TdApi.Chats) result;
-        //    ChatActivity.instance.ListChats(chats);
         //    break;
 
         //case "UpdateNewMessage":

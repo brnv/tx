@@ -10,9 +10,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <include android:id="@+id/chat_list_view" layout="@layout/chat_list" />
+        <include android:id="@+id/chat_list_view" layout="@layout/chats_list" />
 
-        <include android:id="@+id/chat_one_view" layout="@layout/chat_one" />
+        <include android:id="@+id/chat_show_view" layout="@layout/chat_show" />
 
     </ViewFlipper>
 
