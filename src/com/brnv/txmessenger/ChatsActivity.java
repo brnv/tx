@@ -1,4 +1,4 @@
-package com.brnv.telegram;
+package com.brnv.txmessenger;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -24,9 +24,9 @@ import android.widget.ViewFlipper;
 
 import se.marteinn.ui.InteractiveScrollView;
 
-public class ChatActivity extends Activity {
+public class ChatsActivity extends Activity {
 
-    public static ChatActivity instance;
+    public static ChatsActivity instance;
 
     public ViewFlipper viewFlipper;
 
@@ -51,7 +51,7 @@ public class ChatActivity extends Activity {
     }
 
     private void showChatListScreen() {
-        ChatActivity.instance.currentChat = null;
+        ChatsActivity.instance.currentChat = null;
 
         runOnUiThread(new Runnable() {
             @Override
@@ -59,7 +59,7 @@ public class ChatActivity extends Activity {
                 getActionBar().setTitle("Chats");
                 getActionBar().setHomeButtonEnabled(false);
                 getActionBar().setDisplayHomeAsUpEnabled(false);
-                ChatActivity.instance.viewFlipper.setDisplayedChild(0);
+                ChatsActivity.instance.viewFlipper.setDisplayedChild(0);
             }
         });
     }
@@ -76,9 +76,9 @@ public class ChatActivity extends Activity {
     }
 
     public void ListChats(TdApi.Chats chats) {
-        ChatActivity.instance.showChatListScreen();
+        ChatsActivity.instance.showChatListScreen();
 
-        ChatActivity.instance.chats = chats;
+        ChatsActivity.instance.chats = chats;
 
         final LinearLayout
             chatListView = (LinearLayout) findViewById(R.id.layout_chat_list);
@@ -94,7 +94,7 @@ public class ChatActivity extends Activity {
             final TdApi.Chat chat = chats.chats[i];
 
             TextView
-                chatEntryView = new TextView(ChatActivity.instance);
+                chatEntryView = new TextView(ChatsActivity.instance);
 
             TdApi.PrivateChatInfo chatInfo = (TdApi.PrivateChatInfo) chat.type;
             TdApi.User user = chatInfo.user;
@@ -106,12 +106,12 @@ public class ChatActivity extends Activity {
                     TdApiResultHandler.getInstance().Send(
                         new TdApi.GetChatHistory(
                             chat.id, chat.topMessage.id, 0,
-                            ChatActivity.defaultMessagesLimit)
+                            ChatsActivity.defaultMessagesLimit)
                     );
                 }
             });
 
-            ChatActivity.instance.addViewToLayout(chatListView, chatEntryView);
+            ChatsActivity.instance.addViewToLayout(chatListView, chatEntryView);
         }
     }
 
@@ -125,7 +125,7 @@ public class ChatActivity extends Activity {
                 getActionBar().setTitle(user.firstName + " " + user.lastName);
                 getActionBar().setHomeButtonEnabled(true);
                 getActionBar().setDisplayHomeAsUpEnabled(true);
-                ChatActivity.instance.viewFlipper.setDisplayedChild(1);
+                ChatsActivity.instance.viewFlipper.setDisplayedChild(1);
             }
         });
     }
@@ -138,14 +138,14 @@ public class ChatActivity extends Activity {
 
         final long chatId = messages.messages[0].chatId;
 
-        for (int i = 0; i < ChatActivity.instance.chats.chats.length; i++) {
-            if (ChatActivity.instance.chats.chats[i].id == chatId) {
-               ChatActivity.instance.currentChat = ChatActivity.instance.chats.chats[i];
+        for (int i = 0; i < ChatsActivity.instance.chats.chats.length; i++) {
+            if (ChatsActivity.instance.chats.chats[i].id == chatId) {
+               ChatsActivity.instance.currentChat = ChatsActivity.instance.chats.chats[i];
                break;
             }
         }
 
-        ChatActivity.instance.showChatScreen(ChatActivity.instance.currentChat);
+        ChatsActivity.instance.showChatScreen(ChatsActivity.instance.currentChat);
 
         final LinearLayout
             chatContentView = (LinearLayout) findViewById(R.id.chat_messages_view);
@@ -156,17 +156,17 @@ public class ChatActivity extends Activity {
                 chatContentView.removeAllViews();
 
                 for (int i = messages.messages.length - 1; i >= 0 ; i--) {
-                    LinearLayout messageView = ChatActivity.instance.ShowMessage(
+                    LinearLayout messageView = ChatsActivity.instance.ShowMessage(
                         messages.messages[i]
                     );
 
-                    ChatActivity.instance.addViewToLayout(chatContentView, messageView);
+                    ChatsActivity.instance.addViewToLayout(chatContentView, messageView);
                 }
 
                 final InteractiveScrollView
                     chatScrollView = (InteractiveScrollView) findViewById(R.id.chat_scroll_view);
 
-                if (messages.messages.length <= ChatActivity.defaultMessagesLimit) {
+                if (messages.messages.length <= ChatsActivity.defaultMessagesLimit) {
                     chatScrollView.post(new Runnable() {
                         @Override
                         public void run() {
@@ -175,7 +175,7 @@ public class ChatActivity extends Activity {
                     });
                 }
 
-                if (messages.messages.length < ChatActivity.defaultMessagesLimit) {
+                if (messages.messages.length < ChatsActivity.defaultMessagesLimit) {
                     chatScrollView.setOnTopReachedListener(null);
                 } else {
                     chatScrollView.setOnTopReachedListener(
@@ -183,12 +183,12 @@ public class ChatActivity extends Activity {
                             @Override
                             public void onTopReached() {
                                 int nextChunkSize =
-                                    messages.messages.length + ChatActivity.defaultMessagesUpdateLimit;
+                                    messages.messages.length + ChatsActivity.defaultMessagesUpdateLimit;
 
                                 TdApiResultHandler.getInstance().Send(
                                     new TdApi.GetChatHistory(
-                                        ChatActivity.instance.currentChat.id,
-                                        ChatActivity.instance.currentChat.topMessage.id, 0,
+                                        ChatsActivity.instance.currentChat.id,
+                                        ChatsActivity.instance.currentChat.topMessage.id, 0,
                                         nextChunkSize)
                                 );
                             }
@@ -223,7 +223,7 @@ public class ChatActivity extends Activity {
     // refactor this code
     public LinearLayout ShowMessage(TdApi.Message message) {
         LinearLayout
-            messageView = new LinearLayout(ChatActivity.instance);
+            messageView = new LinearLayout(ChatsActivity.instance);
 
         messageView.setPadding(0, 5, 0, 0);
 
@@ -236,7 +236,7 @@ public class ChatActivity extends Activity {
         messageView.setOrientation(LinearLayout.HORIZONTAL);
 
         ImageView
-            userImage = new ImageView(ChatActivity.instance);
+            userImage = new ImageView(ChatsActivity.instance);
 
         userImage.setLayoutParams(
                 new LayoutParams(
@@ -247,7 +247,7 @@ public class ChatActivity extends Activity {
         messageView.addView(userImage);
 
         LinearLayout
-            messageContent = new LinearLayout(ChatActivity.instance);
+            messageContent = new LinearLayout(ChatsActivity.instance);
 
         messageContent.setLayoutParams(
                 new LayoutParams(
@@ -258,7 +258,7 @@ public class ChatActivity extends Activity {
         messageContent.setOrientation(LinearLayout.VERTICAL);
 
         LinearLayout
-            messageContentInfo = new LinearLayout(ChatActivity.instance);
+            messageContentInfo = new LinearLayout(ChatsActivity.instance);
 
         messageContentInfo.setLayoutParams(
                 new LayoutParams(
@@ -269,12 +269,12 @@ public class ChatActivity extends Activity {
         messageContentInfo.setOrientation(LinearLayout.HORIZONTAL);
 
         TdApi.PrivateChatInfo
-            chatInfo = (TdApi.PrivateChatInfo) ChatActivity.instance.currentChat.type;
+            chatInfo = (TdApi.PrivateChatInfo) ChatsActivity.instance.currentChat.type;
 
         final TdApi.User user = chatInfo.user;
 
         TextView
-            userName = new TextView(ChatActivity.instance);
+            userName = new TextView(ChatsActivity.instance);
 
         userName.setLayoutParams(
                 new LayoutParams(
@@ -293,7 +293,7 @@ public class ChatActivity extends Activity {
         messageContentInfo.addView(userName);
 
         TextView
-            messageTime = new TextView(ChatActivity.instance);
+            messageTime = new TextView(ChatsActivity.instance);
 
         messageTime.setLayoutParams(
                 new LayoutParams(
@@ -306,7 +306,7 @@ public class ChatActivity extends Activity {
         messageContentInfo.addView(messageTime);
 
         LinearLayout
-            messageContentMessage = new LinearLayout(ChatActivity.instance);
+            messageContentMessage = new LinearLayout(ChatsActivity.instance);
 
         messageContentMessage.setLayoutParams(
                 new LayoutParams(
@@ -322,7 +322,7 @@ public class ChatActivity extends Activity {
             case "MessageText":
                 TdApi.MessageText messageText = (TdApi.MessageText) message.message;
                 TextView
-                    messageTextMessage = new TextView(ChatActivity.instance);
+                    messageTextMessage = new TextView(ChatsActivity.instance);
 
                 messageTextMessage.setText(messageText.text);
                 messageContentMessage.addView(messageTextMessage);

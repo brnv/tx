@@ -1,4 +1,4 @@
-package com.brnv.telegram;
+package com.brnv.txmessenger;
 
 import android.app.Activity;
 import android.os.Bundle;

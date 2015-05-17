@@ -3,6 +3,6 @@
 rm -r gen
 rm -r bin
 
-ant debug && adb install -r bin/telegramx-debug.apk && \
+ant debug && adb install -r bin/txmessenger-debug.apk && \
 adb shell am start -a android.intent.action.MAIN \
-    -n com.brnv.telegram/com.brnv.telegram.AuthorizationActivity
+    -n com.brnv.txmessenger/com.brnv.txmessenger.MainActivity

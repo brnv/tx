@@ -6,15 +6,15 @@
         android:orientation="vertical">
 
     <ViewFlipper
-            android:id="@+id/authorization_views"
+            android:id="@+id/registration_views"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <include android:id="@+id/phone_view" layout="@layout/form_auth_phone" />
+        <include android:id="@+id/phone_view" layout="@layout/registration_phone" />
 
-        <include android:id="@+id/name_view" layout="@layout/form_auth_name" />
+        <include android:id="@+id/name_view" layout="@layout/registration_name" />
 
-        <include android:id="@+id/code_view" layout="@layout/form_auth_code" />
+        <include android:id="@+id/code_view" layout="@layout/registration_code" />
 
     </ViewFlipper>
 
