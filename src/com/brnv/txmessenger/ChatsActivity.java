@@ -19,7 +19,7 @@ import android.widget.ViewFlipper;
 
 import se.marteinn.ui.InteractiveScrollView;
 
-import java.util.concurrent.Callable;
+import java.util.Date;
 
 public class ChatsActivity extends Activity {
 
@@ -99,29 +99,20 @@ public class ChatsActivity extends Activity {
     }
 
     public void ShowChats(TdApi.Chats chats) {
-        this.flipLayout(0);
-        this.setActionBarTitle("Chats");
-        this.setHomeButtonEnabled(false);
-        this.setDisplayHomeAsUpEnabled(false);
-
         final LinearLayout
             chatsListLayout = (LinearLayout) findViewById(R.id.layout_chats_list);
 
         this.clearView(chatsListLayout);
 
-        this.addViewToLayout(chatsListLayout, this.getChatsEntriesView(chats));
-    }
-
-    private LinearLayout getChatsEntriesView(TdApi.Chats chats) {
-        LinearLayout chatsEntriesView = new LinearLayout(ChatsActivity.instance);
-
-        chatsEntriesView.setOrientation(LinearLayout.VERTICAL);
-
         for (int i = 0; i < chats.chats.length; i++) {
-            chatsEntriesView.addView(this.getChatsEntryView(chats.chats[i]));
+            this.addViewToLayout(chatsListLayout, this.getChatsEntryView(chats.chats[i]));
         }
 
-        return chatsEntriesView;
+        this.setActionBarTitle("Chats");
+        this.setHomeButtonEnabled(false);
+        this.setDisplayHomeAsUpEnabled(false);
+
+        this.flipLayout(0);
     }
 
     class ChatsEntryClickListener implements View.OnClickListener {
@@ -161,56 +152,70 @@ public class ChatsActivity extends Activity {
     }
 
     public void ShowChat(final TdApi.Messages messages) {
-        this.flipLayout(1);
+        final LinearLayout
+            chatShowLayout = (LinearLayout) findViewById(R.id.layout_chat_show);
+
+        this.clearView(chatShowLayout);
 
         TdApi.PrivateChatInfo
             chatInfo = (TdApi.PrivateChatInfo) ChatsActivity.instance.currentChat.type;
 
         TdApi.User user = chatInfo.user;
 
+        for (int i = messages.messages.length - 1; i >= 0; i--) {
+            this.addViewToLayout(chatShowLayout, this.getChatMessageView(messages.messages[i]));
+        }
+
         this.setActionBarTitle(user.firstName + " " + user.lastName);
         this.setHomeButtonEnabled(true);
         this.setDisplayHomeAsUpEnabled(true);
 
-        final LinearLayout
-            chatShowLayout = (LinearLayout) findViewById(R.id.layout_chat_show);
-
-        this.clearView(chatShowLayout);
-
-        //this.addViewToLayout(chatShowLayout, this.getChatMessagesView(messages));
+        this.flipLayout(1);
     }
 
+    private View getChatMessageView(TdApi.Message message) {
+        View
+            chatMessageView = (View) View.inflate(
+                    ChatsActivity.instance, R.layout.chat_message, null
+                    );
 
-    //private View getChatMessagesView(TdApi.Messages messages) {
-    //    //TextView
-    //    //    chatsEntryView = (TextView) View.inflate(
-    //    //        ChatsActivity.instance, R.layout.chats_entry, null
-    //    //    );
+        TextView
+            chatMessageUsername = (TextView) chatMessageView.findViewById(R.id.message_username);
 
-    //    //TdApi.PrivateChatInfo
-    //    //    chatInfo = (TdApi.PrivateChatInfo) chat.type;
+        TdApi.PrivateChatInfo
+            chatInfo = (TdApi.PrivateChatInfo) ChatsActivity.instance.currentChat.type;
 
-    //    //TdApi.User user = chatInfo.user;
+        TdApi.User user = chatInfo.user;
 
-    //    //chatsEntryView.setText(user.firstName + " " + user.lastName);
+        if (message.fromId == user.id) {
+            chatMessageUsername.setText(user.firstName + " " + user.lastName);
+        } else {
+            chatMessageUsername.setText("Me");
+        }
 
-    //    //chatsEntryView.setOnClickListener(new ChatsEntryClickListener(chat));
+        TextView
+            chatMessageTime = (TextView) chatMessageView.findViewById(R.id.message_time);
 
-    //    //return chatsEntryView;
-    //}
+        Date time = new Date((long) message.date * 1000);
 
+        chatMessageTime.setText(
+                String.format("%d:%02d", time.getHours(), time.getMinutes())
+                );
 
-    //    Log.v("!!!", messages.toString());
-    //    if (messages.messages.length == 0) {
-    //        return ;
-    //    }
+        switch (message.message.getClass().getSimpleName()) {
+            case "MessageText":
+                TextView
+                    chatMessageContent = (TextView) chatMessageView.findViewById(R.id.message_content);
 
-    //    final long chatId = messages.messages[0].chatId;
+                TdApi.MessageText messageText = (TdApi.MessageText) message.message;
 
-    //    ChatsActivity.instance.showChatScreen(ChatsActivity.instance.currentChat);
+                chatMessageContent.setText(messageText.text);
+                chatMessageContent.setVisibility(View.VISIBLE);
+                break;
+        }
 
-    //    final LinearLayout
-    //        chatContentView = (LinearLayout) findViewById(R.id.chat_messages_view);
+        return chatMessageView;
+    }
 
     //    runOnUiThread(new Runnable() {
     //        @Override
@@ -279,126 +284,6 @@ public class ChatsActivity extends Activity {
     //            );
     //        }
     //    });
-    //}
-
-    ////@TODO: omg
-    //// refactor this code
-    //public LinearLayout ShowMessage(TdApi.Message message) {
-    //    LinearLayout
-    //        messageView = new LinearLayout(ChatsActivity.instance);
-
-    //    messageView.setPadding(0, 5, 0, 0);
-
-    //    messageView.setLayoutParams(
-    //            new LayoutParams(
-    //                LayoutParams.FILL_PARENT,
-    //                LayoutParams.WRAP_CONTENT)
-    //            );
-
-    //    messageView.setOrientation(LinearLayout.HORIZONTAL);
-
-    //    ImageView
-    //        userImage = new ImageView(ChatsActivity.instance);
-
-    //    userImage.setLayoutParams(
-    //            new LayoutParams(
-    //                LayoutParams.FILL_PARENT,
-    //                LayoutParams.WRAP_CONTENT, 3f)
-    //            );
-
-    //    messageView.addView(userImage);
-
-    //    LinearLayout
-    //        messageContent = new LinearLayout(ChatsActivity.instance);
-
-    //    messageContent.setLayoutParams(
-    //            new LayoutParams(
-    //                LayoutParams.FILL_PARENT,
-    //                LayoutParams.WRAP_CONTENT, 1f)
-    //            );
-
-    //    messageContent.setOrientation(LinearLayout.VERTICAL);
-
-    //    LinearLayout
-    //        messageContentInfo = new LinearLayout(ChatsActivity.instance);
-
-    //    messageContentInfo.setLayoutParams(
-    //            new LayoutParams(
-    //                LayoutParams.FILL_PARENT,
-    //                LayoutParams.FILL_PARENT, 1f)
-    //            );
-
-    //    messageContentInfo.setOrientation(LinearLayout.HORIZONTAL);
-
-    //    TdApi.PrivateChatInfo
-    //        chatInfo = (TdApi.PrivateChatInfo) ChatsActivity.instance.currentChat.type;
-
-    //    final TdApi.User user = chatInfo.user;
-
-    //    TextView
-    //        userName = new TextView(ChatsActivity.instance);
-
-    //    userName.setLayoutParams(
-    //            new LayoutParams(
-    //                LayoutParams.WRAP_CONTENT,
-    //                LayoutParams.WRAP_CONTENT)
-    //            );
-
-    //    userName.setPadding(0, 0, 5, 0);
-
-    //    if (message.fromId == user.id) {
-    //        userName.setText(user.firstName + " " + user.lastName);
-    //    } else {
-    //        userName.setText("Me");
-    //    }
-
-    //    messageContentInfo.addView(userName);
-
-    //    TextView
-    //        messageTime = new TextView(ChatsActivity.instance);
-
-    //    messageTime.setLayoutParams(
-    //            new LayoutParams(
-    //                LayoutParams.WRAP_CONTENT,
-    //                LayoutParams.WRAP_CONTENT)
-    //            );
-
-    //    messageTime.setText("2:09 AM");
-
-    //    messageContentInfo.addView(messageTime);
-
-    //    LinearLayout
-    //        messageContentMessage = new LinearLayout(ChatsActivity.instance);
-
-    //    messageContentMessage.setLayoutParams(
-    //            new LayoutParams(
-    //                LayoutParams.FILL_PARENT,
-    //                LayoutParams.FILL_PARENT, 1f)
-    //            );
-
-    //    messageContentMessage.setPadding(0, 5, 0, 10);
-
-    //    messageContentMessage.setOrientation(LinearLayout.HORIZONTAL);
-
-    //    switch (message.message.getClass().getSimpleName()) {
-    //        case "MessageText":
-    //            TdApi.MessageText messageText = (TdApi.MessageText) message.message;
-    //            TextView
-    //                messageTextMessage = new TextView(ChatsActivity.instance);
-
-    //            messageTextMessage.setText(messageText.text);
-    //            messageContentMessage.addView(messageTextMessage);
-
-    //            break;
-    //    }
-
-    //    messageContent.addView(messageContentInfo);
-
-    //    messageContent.addView(messageContentMessage);
-
-    //    messageView.addView(messageContent);
-
-    //    return messageView;
     //}
 
     private void addViewToLayout(final ViewGroup rootLayout, final View view) {
