@@ -21,6 +21,8 @@ public class MainActivity extends Activity {
 
     public Intent chats;
 
+    public TdApi.User currentUser;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

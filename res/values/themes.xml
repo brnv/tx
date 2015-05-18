@@ -27,4 +27,8 @@
 
     <color name="tx_chats_list_top_message_textColor">#888888</color>
     <color name="tx_chats_list_hr_line_background">#AAAAAA</color>
+
+    <color name="tx_chat_message_username_textColor">#FF54759E</color>
+
+    <color name="tx_chat_message_time_textColor">#888888</color>
 </resources>

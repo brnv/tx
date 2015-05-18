@@ -29,7 +29,7 @@ public class TdApiResultHandler implements Client.ResultHandler {
         switch (result.getClass().getSimpleName()) {
 
         case "AuthStateOk":
-            MainActivity.instance.StartMessenger();
+            TdApiResultHandler.getInstance().Send(new TdApi.GetMe());
             break;
 
         case "AuthStateWaitSetPhoneNumber":
@@ -58,13 +58,14 @@ public class TdApiResultHandler implements Client.ResultHandler {
             ChatsActivity.instance.ShowChat(messages);
             break;
 
+        case "User":
+            TdApi.User user = (TdApi.User) result;
+            MainActivity.instance.currentUser = user;
+            MainActivity.instance.StartMessenger();
+            break;
+
         //case "Contacts":
         //    ContactsActivity.instance.ListContacts((TdApi.Contacts) result);
-        //    break;
-
-        //case "User":
-        //    TdApi.User user = (TdApi.User) result;
-        //    Log.v("!!! user: ", user.toString());
         //    break;
 
         //case "Chat":

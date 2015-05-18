@@ -221,10 +221,28 @@ public class ChatsActivity extends Activity {
 
         TdApi.User user = chatInfo.user;
 
+
+        TextView
+            chatMessageTextInCircle = (TextView)
+            chatMessageView.findViewById(R.id.text_in_circle);
+
         if (message.fromId == user.id) {
             chatMessageUsername.setText(user.firstName + " " + user.lastName);
-        } else {
-            chatMessageUsername.setText("Me");
+
+            chatMessageTextInCircle.setText(
+                    String.valueOf(user.firstName.charAt(0)) +
+                    String.valueOf(user.lastName.charAt(0)));
+        }
+
+        if (message.fromId == MainActivity.instance.currentUser.id) {
+            chatMessageUsername.setText(
+                    MainActivity.instance.currentUser.firstName + " " +
+                    MainActivity.instance.currentUser.lastName
+                    );
+
+            chatMessageTextInCircle.setText(
+                    String.valueOf(MainActivity.instance.currentUser.firstName.charAt(0)) +
+                    String.valueOf(MainActivity.instance.currentUser.lastName.charAt(0)));
         }
 
         TextView
