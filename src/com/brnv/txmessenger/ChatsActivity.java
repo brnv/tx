@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.ViewFlipper;
+import android.widget.ScrollView;
 
 import se.marteinn.ui.InteractiveScrollView;
 
@@ -127,24 +128,57 @@ public class ChatsActivity extends Activity {
 
             TdApiResultHandler.getInstance().Send(
                     new TdApi.GetChatHistory(
-                        chat.id, chat.topMessage.id, 0,
+                        chat.id, chat.topMessage.id, -1,
                         ChatsActivity.chatShowMessagesLimit)
                     );
         }
     };
 
     private View getChatsEntryView(TdApi.Chat chat) {
-        TextView
-            chatsEntryView = (TextView) View.inflate(
-                ChatsActivity.instance, R.layout.chats_entry, null
-            );
+        LinearLayout
+            chatsEntryView = (LinearLayout) View.inflate(
+                    ChatsActivity.instance, R.layout.chats_entry, null
+                    );
 
         TdApi.PrivateChatInfo
             chatInfo = (TdApi.PrivateChatInfo) chat.type;
 
         TdApi.User user = chatInfo.user;
 
-        chatsEntryView.setText(user.firstName + " " + user.lastName);
+        TextView
+            chatsEntryContactName = (TextView)
+            chatsEntryView.findViewById(R.id.contact_name);
+
+        chatsEntryContactName.setText(user.firstName + " " + user.lastName);
+
+        TextView
+            chatsEntryTextInCircle = (TextView)
+            chatsEntryView.findViewById(R.id.text_in_circle);
+
+        chatsEntryTextInCircle.setText(
+                String.valueOf(user.firstName.charAt(0)) +
+                String.valueOf(user.lastName.charAt(0)));
+
+        TextView
+            chatsEntryTopMessageTime = (TextView)
+            chatsEntryView.findViewById(R.id.top_message_time);
+
+        Date time = new Date((long) chat.topMessage.date * 1000);
+
+        chatsEntryTopMessageTime.setText(
+                String.format("%d:%02d", time.getHours(), time.getMinutes())
+                );
+
+        TextView
+            chatsEntryTopMessage = (TextView)
+            chatsEntryView.findViewById(R.id.top_message);
+
+        switch (chat.topMessage.message.getClass().getSimpleName()) {
+            case "MessageText":
+                TdApi.MessageText messageText = (TdApi.MessageText) chat.topMessage.message;
+                chatsEntryTopMessage.setText(messageText.text);
+                break;
+        }
 
         chatsEntryView.setOnClickListener(new ChatsEntryClickListener(chat));
 

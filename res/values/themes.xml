@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="tx_windowBackground">#FFFFFF</color>
+    <color name="tx_action_bar_textColor">#FFFFFF</color>
+    <color name="tx_action_bar_background">#FF54759E</color>
+
 	<style name="TXTheme" parent="@android:style/Theme.Light">
+        <item name="android:windowBackground">@color/tx_windowBackground</item>
 		<item name="android:windowActionBar">true</item>
 		<item name="android:logo">@android:color/transparent</item>
 		<item name="android:actionBarStyle">@style/TXTheme.ActionBar</item>
@@ -9,14 +14,17 @@
 
 	<style name="TXTheme.ActionBar"
 			parent="@android:style/Widget.Holo.Light.ActionBar">
-		<item name="android:background">#FF54759E</item>
+        <item name="android:background">@color/tx_action_bar_background</item>
 		<item name="android:titleTextStyle">@style/TXTheme.ActionBar.TitleTextStyle</item>
 	</style>
 
 	<style name="TXTheme.ActionBar.TitleTextStyle"
 			parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-		<item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColor">@color/tx_action_bar_textColor</item>
 		<item name="android:textStyle">bold</item>
 	</style>
 
+
+    <color name="tx_chats_list_top_message_textColor">#888888</color>
+    <color name="tx_chats_list_hr_line_background">#AAAAAA</color>
 </resources>
