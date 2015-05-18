@@ -22,6 +22,8 @@ import se.marteinn.ui.InteractiveScrollView;
 
 import java.util.Date;
 
+import android.graphics.drawable.GradientDrawable;
+
 public class ChatsActivity extends Activity {
 
     public static ChatsActivity instance;
@@ -159,6 +161,11 @@ public class ChatsActivity extends Activity {
                 String.valueOf(user.firstName.charAt(0)) +
                 String.valueOf(user.lastName.charAt(0)));
 
+        GradientDrawable
+            shapeDrawable = (GradientDrawable) chatsEntryTextInCircle.getBackground();
+
+        shapeDrawable.setColor(this.getUserColor(user));
+
         TextView
             chatsEntryTopMessageTime = (TextView)
             chatsEntryView.findViewById(R.id.top_message_time);
@@ -221,10 +228,12 @@ public class ChatsActivity extends Activity {
 
         TdApi.User user = chatInfo.user;
 
-
         TextView
             chatMessageTextInCircle = (TextView)
             chatMessageView.findViewById(R.id.text_in_circle);
+
+        GradientDrawable
+            shapeDrawable = (GradientDrawable) chatMessageTextInCircle.getBackground();
 
         if (message.fromId == user.id) {
             chatMessageUsername.setText(user.firstName + " " + user.lastName);
@@ -232,6 +241,8 @@ public class ChatsActivity extends Activity {
             chatMessageTextInCircle.setText(
                     String.valueOf(user.firstName.charAt(0)) +
                     String.valueOf(user.lastName.charAt(0)));
+
+            shapeDrawable.setColor(this.getUserColor(user));
         }
 
         if (message.fromId == MainActivity.instance.currentUser.id) {
@@ -243,6 +254,8 @@ public class ChatsActivity extends Activity {
             chatMessageTextInCircle.setText(
                     String.valueOf(MainActivity.instance.currentUser.firstName.charAt(0)) +
                     String.valueOf(MainActivity.instance.currentUser.lastName.charAt(0)));
+
+            shapeDrawable.setColor(this.getUserColor(MainActivity.instance.currentUser));
         }
 
         TextView
@@ -345,5 +358,39 @@ public class ChatsActivity extends Activity {
                 rootLayout.addView(view);
             }
         });
+    }
+
+    private int getUserColor(TdApi.User user) {
+        Integer index = (
+                user.firstName.charAt(0) * (
+                    user.lastName.charAt(0)+user.firstName.charAt(0))) % 7;
+
+        Integer resourceId = R.color.tx_chat_list_entry_circle_background_0;
+
+        switch (index) {
+            case 0:
+                resourceId = R.color.tx_chat_list_entry_circle_background_0;
+                break;
+            case 1:
+                resourceId = R.color.tx_chat_list_entry_circle_background_1;
+                break;
+            case 2:
+                resourceId = R.color.tx_chat_list_entry_circle_background_2;
+                break;
+            case 3:
+                resourceId = R.color.tx_chat_list_entry_circle_background_3;
+                break;
+            case 4:
+                resourceId = R.color.tx_chat_list_entry_circle_background_4;
+                break;
+            case 5:
+                resourceId = R.color.tx_chat_list_entry_circle_background_5;
+                break;
+            case 6:
+                resourceId = R.color.tx_chat_list_entry_circle_background_6;
+                break;
+        }
+
+        return getResources().getColor(resourceId);
     }
 }
