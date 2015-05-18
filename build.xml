@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project name="txmessenger" default="help">
-	<property name="target" value="android-21" />
+	<property name="target" value="android-19" />
 	<property environment="env" />
 	<condition property="sdk.dir" value="${env.ANDROID_HOME}">
 		<isset property="env.ANDROID_HOME" />
