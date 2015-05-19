@@ -101,6 +101,23 @@ public class ChatsActivity extends Activity {
         });
     }
 
+    private void scrollChatToBottom() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final InteractiveScrollView
+                    chatScrollView = (InteractiveScrollView) findViewById(R.id.chat_scroll_view);
+
+                chatScrollView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        chatScrollView.fullScroll(View.FOCUS_DOWN);
+                    }
+                });
+            }
+        });
+    }
+
     public void ShowChats(TdApi.Chats chats) {
         final LinearLayout
             chatsListLayout = (LinearLayout) findViewById(R.id.layout_chats_list);
@@ -226,6 +243,8 @@ public class ChatsActivity extends Activity {
         this.setHomeButtonEnabled(true);
         this.setDisplayHomeAsUpEnabled(true);
 
+        this.scrollChatToBottom();
+
         this.flipLayout(1);
     }
 
@@ -300,7 +319,19 @@ public class ChatsActivity extends Activity {
     public void ShowMessage(TdApi.Message message) {
         if (ChatsActivity.instance.currentChat == null) {
             this.processChatsList();
+            return ;
         }
+
+        if (message.chatId != ChatsActivity.instance.currentChat.id) {
+            return ;
+        }
+
+        final LinearLayout
+            chatShowLayout = (LinearLayout) findViewById(R.id.layout_chat_show);
+
+        this.addViewToLayout(chatShowLayout, this.getChatMessageView(message));
+
+        this.scrollChatToBottom();
     }
 
     //    runOnUiThread(new Runnable() {
@@ -314,18 +345,6 @@ public class ChatsActivity extends Activity {
     //                );
 
     //                ChatsActivity.instance.addViewToLayout(chatContentView, messageView);
-    //            }
-
-    //            final InteractiveScrollView
-    //                chatScrollView = (InteractiveScrollView) findViewById(R.id.chat_scroll_view);
-
-    //            if (messages.messages.length <= ChatsActivity.defaultMessagesLimit) {
-    //                chatScrollView.post(new Runnable() {
-    //                    @Override
-    //                    public void run() {
-    //                        chatScrollView.fullScroll(View.FOCUS_DOWN);
-    //                    }
-    //                });
     //            }
 
     //            if (messages.messages.length < ChatsActivity.defaultMessagesLimit) {
