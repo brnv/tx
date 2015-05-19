@@ -291,6 +291,29 @@ public class ChatsActivity extends Activity {
         public void onTextChanged(CharSequence s, int start, int before, int count) {}
     };
 
+    class ChatMessageSendButtonOnClickListener implements View.OnClickListener {
+
+        private EditText messageInput;
+
+        ChatMessageSendButtonOnClickListener(EditText messageInput) {
+            this.messageInput = messageInput;
+        }
+
+        public void onClick(View v) {
+            TdApi.InputMessageText message = new TdApi.InputMessageText();
+
+            message.text = messageInput.getText().toString();
+
+            messageInput.setText("");
+
+            TdApiResultHandler.getInstance().Send(
+                    new TdApi.SendMessage(
+                        ChatsActivity.instance.currentChat.id, message
+                        )
+                    );
+        }
+    }
+
     public void ShowChat(final TdApi.Messages messages) {
         final LinearLayout
             chatShowLayout = (LinearLayout) findViewById(R.id.layout_chat_show);
@@ -329,23 +352,7 @@ public class ChatsActivity extends Activity {
 
         messageInput.addTextChangedListener(new ChatMessageInputTextWatcher(sendMessageButton));
 
-        sendMessageButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Log.v("!!!", "123");
-                //EditText
-                //    messageInput = (EditText) findViewById(R.id.input_message);
-
-                //TdApi.InputMessageText message = new TdApi.InputMessageText();
-
-                //message.text = messageInput.getText().toString();
-
-                //messageInput.setText("");
-
-                //TdApiResultHandler.getInstance().Send(
-                //    new TdApi.SendMessage(currentChat.id, message)
-                //);
-            }
-        });
+        sendMessageButton.setOnClickListener(new ChatMessageSendButtonOnClickListener(messageInput));
 
         this.flipLayout(1);
     }
