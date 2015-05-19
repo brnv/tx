@@ -401,33 +401,6 @@ public class ChatsActivity extends Activity {
         this.scrollChatToBottom();
     }
 
-    //    runOnUiThread(new Runnable() {
-    //        @Override
-    //        public void run() {
-
-    //            if (messages.messages.length < ChatsActivity.defaultMessagesLimit) {
-    //                chatScrollView.setOnTopReachedListener(null);
-    //            } else {
-    //                chatScrollView.setOnTopReachedListener(
-    //                    new InteractiveScrollView.OnTopReachedListener() {
-    //                        @Override
-    //                        public void onTopReached() {
-    //                            int nextChunkSize =
-    //                                messages.messages.length + ChatsActivity.defaultMessagesUpdateLimit;
-
-    //                            TdApiResultHandler.getInstance().Send(
-    //                                new TdApi.GetChatHistory(
-    //                                    ChatsActivity.instance.currentChat.id,
-    //                                    ChatsActivity.instance.currentChat.topMessage.id, 0,
-    //                                    nextChunkSize)
-    //                            );
-    //                        }
-    //                    }
-    //                );
-    //            }
-    //        }
-    //    });
-
     //    Button
     //        sendMessageButton = (Button) findViewById(R.id.button_send_message);
 
