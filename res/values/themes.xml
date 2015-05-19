@@ -3,7 +3,7 @@
 
     <color name="tx_windowBackground">#FFFFFF</color>
     <color name="tx_action_bar_textColor">#FFFFFF</color>
-    <color name="tx_action_bar_background">#FF54759E</color>
+    <color name="tx_action_bar_background">#5B95C2</color>
 
 	<style name="TXTheme" parent="@android:style/Theme.Light">
         <item name="android:windowBackground">@color/tx_windowBackground</item>
@@ -26,9 +26,9 @@
 
 
     <color name="tx_chats_list_top_message_textColor">#888888</color>
-    <color name="tx_chats_list_hr_line_background">#AAAAAA</color>
+    <color name="tx_chats_list_hr_line_background">#EDEDED</color>
 
-    <color name="tx_chat_message_username_textColor">#FF54759E</color>
+    <color name="tx_chat_message_username_textColor">#5B95C2</color>
 
     <color name="tx_chat_message_time_textColor">#888888</color>
 

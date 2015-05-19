@@ -20,12 +20,14 @@ import android.widget.ScrollView;
 
 import se.marteinn.ui.InteractiveScrollView;
 
-
 import android.graphics.Rect;
 
 import android.view.MotionEvent;
 
 import java.util.Date;
+
+import android.text.TextWatcher;
+import android.text.Editable;
 
 import android.graphics.drawable.GradientDrawable;
 
@@ -136,7 +138,7 @@ public class ChatsActivity extends Activity {
             this.addViewToLayout(chatsListLayout, this.getChatsEntryView(chats.chats[i]));
         }
 
-        this.setActionBarTitle("Chats");
+        this.setActionBarTitle("Messages");
         this.setHomeButtonEnabled(false);
         this.setDisplayHomeAsUpEnabled(false);
 
@@ -269,6 +271,25 @@ public class ChatsActivity extends Activity {
         }
     };
 
+    class ChatMessageInputTextWatcher implements TextWatcher {
+
+        private Button sendButton;
+
+        ChatMessageInputTextWatcher(Button sendButton) {
+            this.sendButton = sendButton;
+        }
+
+        public void afterTextChanged(Editable s) {
+            if (s.toString().length() > 0) {
+                sendButton.setVisibility(View.VISIBLE);
+            } else {
+                sendButton.setVisibility(View.GONE);
+            }
+        }
+
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+    };
 
     public void ShowChat(final TdApi.Messages messages) {
         final LinearLayout
@@ -300,6 +321,31 @@ public class ChatsActivity extends Activity {
                     messages.messages[0].chatId
                     ));
 
+        EditText
+            messageInput = (EditText) findViewById(R.id.input_message);
+
+        Button
+            sendMessageButton = (Button) findViewById(R.id.button_send_message);
+
+        messageInput.addTextChangedListener(new ChatMessageInputTextWatcher(sendMessageButton));
+
+        sendMessageButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Log.v("!!!", "123");
+                //EditText
+                //    messageInput = (EditText) findViewById(R.id.input_message);
+
+                //TdApi.InputMessageText message = new TdApi.InputMessageText();
+
+                //message.text = messageInput.getText().toString();
+
+                //messageInput.setText("");
+
+                //TdApiResultHandler.getInstance().Send(
+                //    new TdApi.SendMessage(currentChat.id, message)
+                //);
+            }
+        });
 
         this.flipLayout(1);
     }
@@ -400,27 +446,6 @@ public class ChatsActivity extends Activity {
 
         this.scrollChatToBottom();
     }
-
-    //    Button
-    //        sendMessageButton = (Button) findViewById(R.id.button_send_message);
-
-    //    sendMessageButton.setOnClickListener(new View.OnClickListener() {
-    //        public void onClick(View v) {
-    //            EditText
-    //                messageInput = (EditText) findViewById(R.id.input_message);
-
-    //            TdApi.InputMessageText message = new TdApi.InputMessageText();
-
-    //            message.text = messageInput.getText().toString();
-
-    //            messageInput.setText("");
-
-    //            TdApiResultHandler.getInstance().Send(
-    //                new TdApi.SendMessage(currentChat.id, message)
-    //            );
-    //        }
-    //    });
-    //}
 
     private void addViewToLayout(final ViewGroup rootLayout, final View view) {
          runOnUiThread(new Runnable() {
