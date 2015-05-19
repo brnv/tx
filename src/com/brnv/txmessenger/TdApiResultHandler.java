@@ -79,8 +79,12 @@ public class TdApiResultHandler implements Client.ResultHandler {
 
         case "User":
             TdApi.User user = (TdApi.User) result;
-            MainActivity.instance.currentUser = user;
-            MainActivity.instance.StartMessenger();
+            if (MainActivity.instance.currentUser == null) {
+                MainActivity.instance.currentUser = user;
+                MainActivity.instance.StartMessenger();
+            } else {
+                Users.ProcessUserStatus(user.id, user.status);
+            }
             break;
 
         //case "Contacts":
@@ -95,6 +99,12 @@ public class TdApiResultHandler implements Client.ResultHandler {
             TdApi.UpdateNewMessage messageObject = (TdApi.UpdateNewMessage) result;
             ChatsActivity.instance.ShowMessage(messageObject.message);
             break;
+
+        case "UpdateUserStatus":
+            TdApi.UpdateUserStatus updateUserStatus = (TdApi.UpdateUserStatus) result;
+            Users.ProcessUserStatus(updateUserStatus.userId, updateUserStatus.status);
+            break;
+
         }
     }
 }

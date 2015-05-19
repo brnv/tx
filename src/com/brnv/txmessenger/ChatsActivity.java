@@ -81,7 +81,7 @@ public class ChatsActivity extends Activity {
         });
     }
 
-    private void setActionBarTitle(final String title) {
+    public void SetActionBarTitle(final String title) {
         runOnUiThread(new Runnable() {
             public void run() {
                 getActionBar().setTitle(title);
@@ -140,7 +140,7 @@ public class ChatsActivity extends Activity {
             this.addViewToLayout(chatsListLayout, this.getChatsEntryView(chats.chats[i]));
         }
 
-        this.setActionBarTitle("Messages");
+        this.SetActionBarTitle("Messages");
         this.setHomeButtonEnabled(false);
         this.setDisplayHomeAsUpEnabled(false);
 
@@ -357,6 +357,8 @@ public class ChatsActivity extends Activity {
 
         TdApi.User user = chatInfo.user;
 
+        TdApiResultHandler.getInstance().Send(new TdApi.GetUser(user.id));
+
         for (int i = messages.messages.length - 1; i >= 0; i--) {
             this.addViewToLayout(chatShowLayout, this.getChatMessageView(messages.messages[i]));
 
@@ -375,7 +377,7 @@ public class ChatsActivity extends Activity {
 
         ChatsActivity.instance.currentChatOldestMessageId = messages.messages[messages.messages.length-1].id;
 
-        this.setActionBarTitle(user.firstName + " " + user.lastName);
+        this.SetActionBarTitle(user.firstName + " " + user.lastName);
         this.setHomeButtonEnabled(true);
         this.setDisplayHomeAsUpEnabled(true);
 
@@ -557,4 +559,5 @@ public class ChatsActivity extends Activity {
 
         return getResources().getColor(resourceId);
     }
+
 }
