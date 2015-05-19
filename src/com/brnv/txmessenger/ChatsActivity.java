@@ -115,6 +115,8 @@ public class ChatsActivity extends Activity {
         this.setHomeButtonEnabled(false);
         this.setDisplayHomeAsUpEnabled(false);
 
+        ChatsActivity.instance.currentChat = null;
+
         this.flipLayout(0);
     }
 
@@ -154,17 +156,17 @@ public class ChatsActivity extends Activity {
         chatsEntryContactName.setText(user.firstName + " " + user.lastName);
 
         TextView
-            chatsEntryTextInCircle = (TextView)
-            chatsEntryView.findViewById(R.id.text_in_circle);
+            chatsEntryUserInitials = (TextView)
+            chatsEntryView.findViewById(R.id.user_initials);
 
-        chatsEntryTextInCircle.setText(
+        chatsEntryUserInitials.setText(
                 String.valueOf(user.firstName.charAt(0)) +
                 String.valueOf(user.lastName.charAt(0)));
 
         GradientDrawable
-            shapeDrawable = (GradientDrawable) chatsEntryTextInCircle.getBackground();
+            userInitialsShape = (GradientDrawable) chatsEntryUserInitials.getBackground();
 
-        shapeDrawable.setColor(this.getUserColor(user));
+        userInitialsShape.setColor(this.getUserColor(user));
 
         TextView
             chatsEntryTopMessageTime = (TextView)
@@ -188,6 +190,19 @@ public class ChatsActivity extends Activity {
         }
 
         chatsEntryView.setOnClickListener(new ChatsEntryClickListener(chat));
+
+        if (chat.unreadCount != 0) {
+            TextView
+                chatsEntryUnreadCount = (TextView)
+                chatsEntryView.findViewById(R.id.unread_count);
+
+            GradientDrawable
+                unreadCountShape = (GradientDrawable) chatsEntryUnreadCount.getBackground();
+
+            unreadCountShape.setColor(this.getUserColor(user));
+            chatsEntryUnreadCount.setText(Integer.toString(chat.unreadCount));
+            chatsEntryUnreadCount.setVisibility(View.VISIBLE);
+        }
 
         return chatsEntryView;
     }
@@ -229,20 +244,20 @@ public class ChatsActivity extends Activity {
         TdApi.User user = chatInfo.user;
 
         TextView
-            chatMessageTextInCircle = (TextView)
-            chatMessageView.findViewById(R.id.text_in_circle);
+            chatMessageUserInitials = (TextView)
+            chatMessageView.findViewById(R.id.user_initials);
 
         GradientDrawable
-            shapeDrawable = (GradientDrawable) chatMessageTextInCircle.getBackground();
+            userInitialsShape = (GradientDrawable) chatMessageUserInitials.getBackground();
 
         if (message.fromId == user.id) {
             chatMessageUsername.setText(user.firstName + " " + user.lastName);
 
-            chatMessageTextInCircle.setText(
+            chatMessageUserInitials.setText(
                     String.valueOf(user.firstName.charAt(0)) +
                     String.valueOf(user.lastName.charAt(0)));
 
-            shapeDrawable.setColor(this.getUserColor(user));
+            userInitialsShape.setColor(this.getUserColor(user));
         }
 
         if (message.fromId == MainActivity.instance.currentUser.id) {
@@ -251,11 +266,11 @@ public class ChatsActivity extends Activity {
                     MainActivity.instance.currentUser.lastName
                     );
 
-            chatMessageTextInCircle.setText(
+            chatMessageUserInitials.setText(
                     String.valueOf(MainActivity.instance.currentUser.firstName.charAt(0)) +
                     String.valueOf(MainActivity.instance.currentUser.lastName.charAt(0)));
 
-            shapeDrawable.setColor(this.getUserColor(MainActivity.instance.currentUser));
+            userInitialsShape.setColor(this.getUserColor(MainActivity.instance.currentUser));
         }
 
         TextView
@@ -280,6 +295,12 @@ public class ChatsActivity extends Activity {
         }
 
         return chatMessageView;
+    }
+
+    public void ShowMessage(TdApi.Message message) {
+        if (ChatsActivity.instance.currentChat == null) {
+            this.processChatsList();
+        }
     }
 
     //    runOnUiThread(new Runnable() {

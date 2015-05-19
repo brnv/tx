@@ -68,20 +68,13 @@ public class TdApiResultHandler implements Client.ResultHandler {
         //    ContactsActivity.instance.ListContacts((TdApi.Contacts) result);
         //    break;
 
-        //case "Chat":
-        //    //TdApi.Chat chat = (TdApi.Chat) result;
-        //    //ChatActivity.instance.ShowChat(chat);
-        //    break;
+        case "UpdateNewMessage":
+            TdApi.UpdateNewMessage messageObject = (TdApi.UpdateNewMessage) result;
+            TdApi.Message message = messageObject.message;
 
-        //case "UpdateNewMessage":
-        //    TdApi.UpdateNewMessage messageObject = (TdApi.UpdateNewMessage) result;
-        //    TdApi.Message message = messageObject.message;
+            ChatsActivity.instance.ShowMessage(message);
 
-        //    if (ChatActivity.instance.currentChat.id == message.chatId) {
-        //        ChatActivity.instance.ShowMessage(message);
-        //    }
-
-        //    break;
+            break;
         }
     }
 }
