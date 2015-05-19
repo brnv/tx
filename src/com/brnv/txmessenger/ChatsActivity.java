@@ -25,6 +25,8 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 
 import java.util.Date;
+import java.util.Calendar;
+import java.util.Locale;
 
 import android.text.TextWatcher;
 import android.text.Editable;
@@ -37,7 +39,7 @@ public class ChatsActivity extends Activity {
 
     public ViewFlipper viewFlipper;
 
-    static public int chatShowMessagesLimit = 10;
+    static public int chatShowMessagesLimit = 20;
     static public int chatUpdateMessageLimit = 5;
 
     public TdApi.Chat currentChat;
@@ -314,6 +316,36 @@ public class ChatsActivity extends Activity {
         }
     }
 
+    private boolean isSameDayMessages(TdApi.Message first, TdApi.Message second) {
+        if (first.date / (24*60*60) == second.date / (24*60*60)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private View getChatDateView(TdApi.Message message) {
+        View
+            chatDateView = (View) View.inflate(
+                    ChatsActivity.instance, R.layout.chat_day, null
+                    );
+
+        TextView
+            chatMessageDate = (TextView) chatDateView.findViewById(R.id.message_date);
+
+        Calendar messageDate = Calendar.getInstance();
+
+        messageDate.setTime(new Date((long) message.date * 1000));
+
+        String month = messageDate.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+
+        chatMessageDate.setText(
+                String.format("%d %s", messageDate.get(Calendar.DAY_OF_MONTH), month)
+                );
+
+        return chatDateView;
+    }
+
     public void ShowChat(final TdApi.Messages messages) {
         final LinearLayout
             chatShowLayout = (LinearLayout) findViewById(R.id.layout_chat_show);
@@ -327,6 +359,18 @@ public class ChatsActivity extends Activity {
 
         for (int i = messages.messages.length - 1; i >= 0; i--) {
             this.addViewToLayout(chatShowLayout, this.getChatMessageView(messages.messages[i]));
+
+            if (i > 0) {
+                if (!this.isSameDayMessages(messages.messages[i], messages.messages[i-1])) {
+                    this.addViewToLayout(chatShowLayout, this.getChatDateView(messages.messages[i-1]));
+                }
+            }
+
+            if (i == 0) {
+                this.addViewToLayoutTop(
+                        chatShowLayout, this.getChatDateView(messages.messages[messages.messages.length - 1])
+                        );
+            }
         }
 
         ChatsActivity.instance.currentChatOldestMessageId = messages.messages[messages.messages.length-1].id;
@@ -362,7 +406,15 @@ public class ChatsActivity extends Activity {
             chatShowLayout = (LinearLayout) findViewById(R.id.layout_chat_show);
 
         for (int i = 0; i < messages.messages.length; i++) {
-            this.addViewToLayoutTop(chatShowLayout, this.getChatMessageView(messages.messages[i]));
+            View messageView = this.getChatMessageView(messages.messages[i]);
+
+            this.addViewToLayoutTop(chatShowLayout, messageView);
+
+            if (i < messages.messages.length - 1) {
+                if (!this.isSameDayMessages(messages.messages[i], messages.messages[i+1])) {
+                    this.addViewToLayoutTop(chatShowLayout, this.getChatDateView(messages.messages[i]));
+                }
+            }
         }
 
         ChatsActivity.instance.currentChatOldestMessageId = messages.messages[messages.messages.length-1].id;
@@ -415,10 +467,10 @@ public class ChatsActivity extends Activity {
         TextView
             chatMessageTime = (TextView) chatMessageView.findViewById(R.id.message_time);
 
-        Date time = new Date((long) message.date * 1000);
+        Date messageTime = new Date((long) message.date * 1000);
 
         chatMessageTime.setText(
-                String.format("%d:%02d", time.getHours(), time.getMinutes())
+                String.format("%d:%02d", messageTime.getHours(), messageTime.getMinutes())
                 );
 
         switch (message.message.getClass().getSimpleName()) {
