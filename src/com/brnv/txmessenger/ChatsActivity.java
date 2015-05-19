@@ -35,10 +35,13 @@ public class ChatsActivity extends Activity {
 
     public ViewFlipper viewFlipper;
 
-    static public int chatShowMessagesLimit = 20;
-    //static public int defaultMessagesUpdateLimit = 8;
+    static public int chatShowMessagesLimit = 10;
+    static public int chatUpdateMessageLimit = 5;
 
     public TdApi.Chat currentChat;
+    public int currentChatOldestMessageId;
+
+    public boolean chatUpdateMode = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -170,13 +173,7 @@ public class ChatsActivity extends Activity {
 
             if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
                 if (touchIsOverView) {
-                    ChatsActivity.instance.currentChat = chat;
-
-                    TdApiResultHandler.getInstance().Send(
-                            new TdApi.GetChatHistory(
-                                chat.id, chat.topMessage.id, -1,
-                                ChatsActivity.chatShowMessagesLimit)
-                            );
+                    TdApiResultHandler.getInstance().Send(new TdApi.GetChat(chat.id));
                 }
             }
 
@@ -253,6 +250,26 @@ public class ChatsActivity extends Activity {
         return chatsEntryView;
     }
 
+    class ChatScrollOnTopListener implements InteractiveScrollView.OnTopReachedListener {
+        private long chatId;
+
+        ChatScrollOnTopListener(long chatId) {
+            this.chatId = chatId;
+        }
+
+        @Override
+        public void onTopReached() {
+            TdApiResultHandler.getInstance().Send(
+                    new TdApi.GetChatHistory(
+                        chatId,
+                        ChatsActivity.instance.currentChatOldestMessageId, 0,
+                        ChatsActivity.chatUpdateMessageLimit
+                        )
+                    );
+        }
+    };
+
+
     public void ShowChat(final TdApi.Messages messages) {
         final LinearLayout
             chatShowLayout = (LinearLayout) findViewById(R.id.layout_chat_show);
@@ -268,13 +285,34 @@ public class ChatsActivity extends Activity {
             this.addViewToLayout(chatShowLayout, this.getChatMessageView(messages.messages[i]));
         }
 
+        ChatsActivity.instance.currentChatOldestMessageId = messages.messages[messages.messages.length-1].id;
+
         this.setActionBarTitle(user.firstName + " " + user.lastName);
         this.setHomeButtonEnabled(true);
         this.setDisplayHomeAsUpEnabled(true);
 
         this.scrollChatToBottom();
 
+        final InteractiveScrollView
+            chatScrollView = (InteractiveScrollView) findViewById(R.id.chat_scroll_view);
+
+        chatScrollView.setOnTopReachedListener(new ChatScrollOnTopListener(
+                    messages.messages[0].chatId
+                    ));
+
+
         this.flipLayout(1);
+    }
+
+    public void UpdateChat(TdApi.Messages messages) {
+        final LinearLayout
+            chatShowLayout = (LinearLayout) findViewById(R.id.layout_chat_show);
+
+        for (int i = 0; i < messages.messages.length; i++) {
+            this.addViewToLayoutTop(chatShowLayout, this.getChatMessageView(messages.messages[i]));
+        }
+
+        ChatsActivity.instance.currentChatOldestMessageId = messages.messages[messages.messages.length-1].id;
     }
 
     private View getChatMessageView(TdApi.Message message) {
@@ -366,15 +404,6 @@ public class ChatsActivity extends Activity {
     //    runOnUiThread(new Runnable() {
     //        @Override
     //        public void run() {
-    //            chatContentView.removeAllViews();
-
-    //            for (int i = messages.messages.length - 1; i >= 0 ; i--) {
-    //                LinearLayout messageView = ChatsActivity.instance.ShowMessage(
-    //                    messages.messages[i]
-    //                );
-
-    //                ChatsActivity.instance.addViewToLayout(chatContentView, messageView);
-    //            }
 
     //            if (messages.messages.length < ChatsActivity.defaultMessagesLimit) {
     //                chatScrollView.setOnTopReachedListener(null);
@@ -425,6 +454,15 @@ public class ChatsActivity extends Activity {
             @Override
             public void run() {
                 rootLayout.addView(view);
+            }
+        });
+    }
+
+    private void addViewToLayoutTop(final ViewGroup rootLayout, final View view) {
+         runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                rootLayout.addView(view, 0);
             }
         });
     }

@@ -53,9 +53,29 @@ public class TdApiResultHandler implements Client.ResultHandler {
             ChatsActivity.instance.ShowChats(chats);
             break;
 
+        case "Chat":
+            TdApi.Chat chat = (TdApi.Chat) result;
+            ChatsActivity.instance.currentChat = chat;
+            ChatsActivity.instance.chatUpdateMode = false;
+
+            TdApiResultHandler.getInstance().Send(
+                    new TdApi.GetChatHistory(
+                        chat.id, chat.topMessage.id, -1,
+                        ChatsActivity.chatShowMessagesLimit)
+                    );
+            break;
+
+
         case "Messages":
             TdApi.Messages messages = (TdApi.Messages) result;
-            ChatsActivity.instance.ShowChat(messages);
+
+            if (!ChatsActivity.instance.chatUpdateMode) {
+                ChatsActivity.instance.ShowChat(messages);
+                ChatsActivity.instance.chatUpdateMode = true;
+            } else {
+                ChatsActivity.instance.UpdateChat(messages);
+            }
+
             break;
 
         case "User":
