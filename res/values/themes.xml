@@ -32,12 +32,11 @@
 
     <color name="tx_chat_message_time_textColor">#888888</color>
 
-
     <color name="tx_chat_list_entry_circle_background_0">#7FCBD9</color>
-    <color name="tx_chat_list_entry_circle_background_1">#6eb4d6</color>
-    <color name="tx_chat_list_entry_circle_background_2">#7bcc80</color>
-    <color name="tx_chat_list_entry_circle_background_3">#e48283</color>
-    <color name="tx_chat_list_entry_circle_background_4">#efa781</color>
-    <color name="tx_chat_list_entry_circle_background_5">#f083ac</color>
-    <color name="tx_chat_list_entry_circle_background_6">#e6c26c</color>
+    <color name="tx_chat_list_entry_circle_background_1">#6EB4D6</color>
+    <color name="tx_chat_list_entry_circle_background_2">#7BCC80</color>
+    <color name="tx_chat_list_entry_circle_background_3">#E48283</color>
+    <color name="tx_chat_list_entry_circle_background_4">#EFA781</color>
+    <color name="tx_chat_list_entry_circle_background_5">#F083AC</color>
+    <color name="tx_chat_list_entry_circle_background_6">#E6C26C</color>
 </resources>

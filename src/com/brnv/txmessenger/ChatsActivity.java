@@ -20,6 +20,11 @@ import android.widget.ScrollView;
 
 import se.marteinn.ui.InteractiveScrollView;
 
+
+import android.graphics.Rect;
+
+import android.view.MotionEvent;
+
 import java.util.Date;
 
 import android.graphics.drawable.GradientDrawable;
@@ -137,21 +142,45 @@ public class ChatsActivity extends Activity {
         this.flipLayout(0);
     }
 
-    class ChatsEntryClickListener implements View.OnClickListener {
+    class ChatsEntryTouchListener implements View.OnTouchListener {
         private TdApi.Chat chat;
 
-        ChatsEntryClickListener(TdApi.Chat chat) {
+        ChatsEntryTouchListener(TdApi.Chat chat) {
             this.chat = chat;
         }
 
-        public void onClick(View v) {
-            ChatsActivity.instance.currentChat = chat;
+        private Rect rect;
 
-            TdApiResultHandler.getInstance().Send(
-                    new TdApi.GetChatHistory(
-                        chat.id, chat.topMessage.id, -1,
-                        ChatsActivity.chatShowMessagesLimit)
-                    );
+        private boolean touchIsOverView;
+
+        public boolean onTouch(View v, MotionEvent event) {
+
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                touchIsOverView = true;
+                rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+            }
+
+            if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                if (touchIsOverView &&
+                        !rect.contains(v.getLeft() + (int) event.getX(), v.getTop() + (int) event.getY())
+                   ) {
+                    touchIsOverView = false;
+                   }
+            }
+
+            if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+                if (touchIsOverView) {
+                    ChatsActivity.instance.currentChat = chat;
+
+                    TdApiResultHandler.getInstance().Send(
+                            new TdApi.GetChatHistory(
+                                chat.id, chat.topMessage.id, -1,
+                                ChatsActivity.chatShowMessagesLimit)
+                            );
+                }
+            }
+
+            return true;
         }
     };
 
@@ -206,7 +235,7 @@ public class ChatsActivity extends Activity {
                 break;
         }
 
-        chatsEntryView.setOnClickListener(new ChatsEntryClickListener(chat));
+        chatsEntryView.setOnTouchListener(new ChatsEntryTouchListener(chat));
 
         if (chat.unreadCount != 0) {
             TextView
