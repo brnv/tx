@@ -74,7 +74,6 @@ public class ChatsActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.chat_menu, menu);
 
         return true;
@@ -373,7 +372,9 @@ public class ChatsActivity extends Activity {
          runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                findViewById(R.id.chat_menu).setVisibility(View.GONE);
+                if (findViewById(R.id.chat_menu) != null) {
+                    findViewById(R.id.chat_menu).setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -382,7 +383,9 @@ public class ChatsActivity extends Activity {
          runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                findViewById(R.id.chat_menu).setVisibility(View.VISIBLE);
+                if (findViewById(R.id.chat_menu) != null) {
+                    findViewById(R.id.chat_menu).setVisibility(View.VISIBLE);
+                }
             }
         });
     }

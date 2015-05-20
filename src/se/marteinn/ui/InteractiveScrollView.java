@@ -58,10 +58,15 @@ public class InteractiveScrollView extends ScrollView {
             mListenerBottom.onBottomReached();
         }
 
-        int diffTop = (view.getTop()-+getScrollY());
+        int diffTop = (view.getTop()-getScrollY());
 
         if (diffTop == 0 && mListenerTop != null) {
             mListenerTop.onTopReached();
+            // ugly hack to prevent double onTopReached();
+            try {
+                Thread.sleep(10);
+            } catch (Exception e) {
+            }
         }
 
         super.onScrollChanged(l, t, oldl, oldt);
