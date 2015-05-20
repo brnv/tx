@@ -66,6 +66,7 @@ public class RegistrationActivity extends Activity {
     }
 
     private void showPhoneScreen() {
+        this.SetActionBarTitle("Phone number");
         this.flipLayout(0);
 
         Button
@@ -75,6 +76,7 @@ public class RegistrationActivity extends Activity {
     }
 
     private void showNameScreen() {
+        this.SetActionBarTitle("Name");
         this.flipLayout(1);
 
         Button
@@ -84,6 +86,7 @@ public class RegistrationActivity extends Activity {
     }
 
     private void showCodeScreen() {
+        this.SetActionBarTitle("Code");
         this.flipLayout(2);
 
         Button
@@ -140,4 +143,12 @@ public class RegistrationActivity extends Activity {
                     );
         }
     };
+
+    public void SetActionBarTitle(final String title) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                getActionBar().setTitle(title);
+            }
+        });
+    }
 }
