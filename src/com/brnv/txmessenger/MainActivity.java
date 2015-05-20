@@ -33,12 +33,20 @@ public class MainActivity extends Activity {
         chats = new Intent(this, ChatsActivity.class);
         registration = new Intent(this, RegistrationActivity.class);
 
+
+        this.init();
+    }
+
+    private void init() {
         File cacheDir = this.getApplicationContext().getCacheDir();
         TG.setDir(cacheDir.toString());
-
         TG.setUpdatesHandler(TdApiResultHandler.getInstance());
-
         this.checkAuth();
+    }
+
+    public void onResume() {
+        super.onResume();
+        this.init();
     }
 
     public void StartMessenger() {
