@@ -7,12 +7,12 @@ import android.util.Log;
 public class Users {
 
     static public void SetUserOffline(int userId) {
-        if (ChatsActivity.instance.currentChat == null) {
+        if (ChatActivity.instance.currentChat == null) {
             return ;
         }
 
         TdApi.PrivateChatInfo
-            chatInfo = (TdApi.PrivateChatInfo) ChatsActivity.instance.currentChat.type;
+            chatInfo = (TdApi.PrivateChatInfo) ChatActivity.instance.currentChat.type;
 
         TdApi.User user = chatInfo.user;
         if (user.id == userId) {
@@ -21,12 +21,12 @@ public class Users {
     }
 
     static public void SetUserOnline(int userId) {
-        if (ChatsActivity.instance.currentChat == null) {
+        if (ChatActivity.instance.currentChat == null) {
             return ;
         }
 
         TdApi.PrivateChatInfo
-            chatInfo = (TdApi.PrivateChatInfo) ChatsActivity.instance.currentChat.type;
+            chatInfo = (TdApi.PrivateChatInfo) ChatActivity.instance.currentChat.type;
 
         TdApi.User user = chatInfo.user;
         if (user.id == userId) {

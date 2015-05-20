@@ -55,24 +55,24 @@ public class TdApiResultHandler implements Client.ResultHandler {
 
         case "Chat":
             TdApi.Chat chat = (TdApi.Chat) result;
-            ChatsActivity.instance.currentChat = chat;
-            ChatsActivity.instance.chatUpdateMode = false;
+            ChatActivity.instance.currentChat = chat;
+            ChatActivity.instance.chatUpdateMode = false;
 
             TdApiResultHandler.getInstance().Send(
                     new TdApi.GetChatHistory(
                         chat.id, chat.topMessage.id, -1,
-                        ChatsActivity.chatShowMessagesLimit)
+                        ChatActivity.chatShowMessagesLimit)
                     );
             break;
 
         case "Messages":
             TdApi.Messages messages = (TdApi.Messages) result;
 
-            if (!ChatsActivity.instance.chatUpdateMode) {
-                ChatsActivity.instance.ShowChat(messages);
-                ChatsActivity.instance.chatUpdateMode = true;
+            if (!ChatActivity.instance.chatUpdateMode) {
+                ChatActivity.instance.ShowChat(messages);
+                ChatActivity.instance.chatUpdateMode = true;
             } else {
-                ChatsActivity.instance.UpdateChat(messages);
+                ChatActivity.instance.UpdateChat(messages);
             }
 
             break;
@@ -92,12 +92,12 @@ public class TdApiResultHandler implements Client.ResultHandler {
         //    break;
 
         case "Message":
-            ChatsActivity.instance.ShowMessage((TdApi.Message) result);
+            ChatActivity.instance.ShowMessage((TdApi.Message) result);
             break;
 
         case "UpdateNewMessage":
             TdApi.UpdateNewMessage messageObject = (TdApi.UpdateNewMessage) result;
-            ChatsActivity.instance.ShowMessage(messageObject.message);
+            ChatActivity.instance.ShowMessage(messageObject.message);
             break;
 
         case "UpdateUserStatus":
