@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 import android.view.MenuItem;
+import android.view.Menu;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.ViewFlipper;
@@ -59,15 +60,22 @@ public class ChatsActivity extends Activity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-         switch (item.getItemId()) {
-        case android.R.id.home:
-            this.processChatsList();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.processChatsList();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.chat_menu, menu);
+
+        return true;
+    }
 
     private void processChatsList() {
         TdApiResultHandler.getInstance().Send(new TdApi.GetChats(0, 3));
@@ -147,6 +155,7 @@ public class ChatsActivity extends Activity {
         ChatsActivity.instance.currentChat = null;
 
         this.flipLayout(0);
+        this.hideChatMenu();
     }
 
     class ChatsEntryTouchListener implements View.OnTouchListener {
@@ -346,6 +355,24 @@ public class ChatsActivity extends Activity {
         return chatDateView;
     }
 
+    private void hideChatMenu() {
+         runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(R.id.chat_menu).setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void showChatMenu() {
+         runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(R.id.chat_menu).setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
     public void ShowChat(final TdApi.Messages messages) {
         final LinearLayout
             chatShowLayout = (LinearLayout) findViewById(R.id.layout_chat_show);
@@ -401,6 +428,7 @@ public class ChatsActivity extends Activity {
         sendMessageButton.setOnClickListener(new ChatMessageSendButtonOnClickListener(messageInput));
 
         this.flipLayout(1);
+        this.showChatMenu();
     }
 
     public void UpdateChat(TdApi.Messages messages) {
