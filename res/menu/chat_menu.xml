@@ -7,6 +7,7 @@
 
         <menu>
             <item
+                    android:id="@+id/clear_history"
                     android:title="Clear history"/>
         </menu>
     </item>

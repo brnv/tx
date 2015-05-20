@@ -58,11 +58,16 @@ public class TdApiResultHandler implements Client.ResultHandler {
             ChatsActivity.instance.currentChat = chat;
             ChatsActivity.instance.chatUpdateMode = false;
 
-            TdApiResultHandler.getInstance().Send(
-                    new TdApi.GetChatHistory(
-                        chat.id, chat.topMessage.id, -1,
-                        ChatsActivity.chatShowMessagesLimit)
-                    );
+            if (chat.topMessage.id != 0) {
+                TdApiResultHandler.getInstance().Send(
+                        new TdApi.GetChatHistory(
+                            chat.id, chat.topMessage.id, -1,
+                            ChatsActivity.chatShowMessagesLimit)
+                        );
+            } else {
+                ChatsActivity.instance.ShowChat(new TdApi.Messages(new TdApi.Message[0]));
+            }
+
             break;
 
         case "Messages":
@@ -105,6 +110,9 @@ public class TdApiResultHandler implements Client.ResultHandler {
             Users.ProcessUserStatus(updateUserStatus.userId, updateUserStatus.status);
             break;
 
+        case "Ok":
+            Log.v("!!!", "yep, just Ok");
+            break;
         }
     }
 }

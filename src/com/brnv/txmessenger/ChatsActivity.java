@@ -64,6 +64,9 @@ public class ChatsActivity extends Activity {
             case android.R.id.home:
                 this.processChatsList();
                 return true;
+            case R.id.clear_history:
+                this.clearChatHistory(ChatsActivity.instance.currentChat.id);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -78,7 +81,16 @@ public class ChatsActivity extends Activity {
     }
 
     private void processChatsList() {
-        TdApiResultHandler.getInstance().Send(new TdApi.GetChats(0, 3));
+        TdApiResultHandler.getInstance().Send(new TdApi.GetChats(0, 10));
+    }
+
+    private void clearChatHistory(long chatId) {
+        TdApiResultHandler.getInstance().Send(new TdApi.DeleteChatHistory(chatId));
+
+        final LinearLayout
+            chatShowLayout = (LinearLayout) findViewById(R.id.layout_chat_show);
+
+        this.clearView(chatShowLayout);
     }
 
     private void flipLayout(final Integer id) {
@@ -224,25 +236,27 @@ public class ChatsActivity extends Activity {
 
         userInitialsShape.setColor(this.getUserColor(user));
 
-        TextView
-            chatsEntryTopMessageTime = (TextView)
-            chatsEntryView.findViewById(R.id.top_message_time);
+        if (chat.topMessage.id != 0) {
+            TextView
+                chatsEntryTopMessageTime = (TextView)
+                chatsEntryView.findViewById(R.id.top_message_time);
 
-        Date time = new Date((long) chat.topMessage.date * 1000);
+            Date time = new Date((long) chat.topMessage.date * 1000);
 
-        chatsEntryTopMessageTime.setText(
-                String.format("%d:%02d", time.getHours(), time.getMinutes())
-                );
+            chatsEntryTopMessageTime.setText(
+                    String.format("%d:%02d", time.getHours(), time.getMinutes())
+                    );
 
-        TextView
-            chatsEntryTopMessage = (TextView)
-            chatsEntryView.findViewById(R.id.top_message);
+            TextView
+                chatsEntryTopMessage = (TextView)
+                chatsEntryView.findViewById(R.id.top_message);
 
-        switch (chat.topMessage.message.getClass().getSimpleName()) {
-            case "MessageText":
-                TdApi.MessageText messageText = (TdApi.MessageText) chat.topMessage.message;
-                chatsEntryTopMessage.setText(messageText.text);
-                break;
+            switch (chat.topMessage.message.getClass().getSimpleName()) {
+                case "MessageText":
+                    TdApi.MessageText messageText = (TdApi.MessageText) chat.topMessage.message;
+                    chatsEntryTopMessage.setText(messageText.text);
+                    break;
+            }
         }
 
         chatsEntryView.setOnTouchListener(new ChatsEntryTouchListener(chat));
@@ -386,36 +400,38 @@ public class ChatsActivity extends Activity {
 
         TdApiResultHandler.getInstance().Send(new TdApi.GetUser(user.id));
 
-        for (int i = messages.messages.length - 1; i >= 0; i--) {
-            this.addViewToLayout(chatShowLayout, this.getChatMessageView(messages.messages[i]));
+        if (messages.messages.length > 0) {
+            for (int i = messages.messages.length - 1; i >= 0; i--) {
+                this.addViewToLayout(chatShowLayout, this.getChatMessageView(messages.messages[i]));
 
-            if (i > 0) {
-                if (!this.isSameDayMessages(messages.messages[i], messages.messages[i-1])) {
-                    this.addViewToLayout(chatShowLayout, this.getChatDateView(messages.messages[i-1]));
+                if (i > 0) {
+                    if (!this.isSameDayMessages(messages.messages[i], messages.messages[i-1])) {
+                        this.addViewToLayout(chatShowLayout, this.getChatDateView(messages.messages[i-1]));
+                    }
+                }
+
+                if (i == 0) {
+                    this.addViewToLayoutTop(
+                            chatShowLayout, this.getChatDateView(messages.messages[messages.messages.length - 1])
+                            );
                 }
             }
 
-            if (i == 0) {
-                this.addViewToLayoutTop(
-                        chatShowLayout, this.getChatDateView(messages.messages[messages.messages.length - 1])
-                        );
-            }
-        }
+            ChatsActivity.instance.currentChatOldestMessageId = messages.messages[messages.messages.length-1].id;
 
-        ChatsActivity.instance.currentChatOldestMessageId = messages.messages[messages.messages.length-1].id;
+            this.scrollChatToBottom();
+
+            final InteractiveScrollView
+                chatScrollView = (InteractiveScrollView) findViewById(R.id.chat_scroll_view);
+
+            chatScrollView.setOnTopReachedListener(new ChatScrollOnTopListener(
+                        messages.messages[0].chatId
+                        ));
+        }
 
         this.SetActionBarTitle(user.firstName + " " + user.lastName);
         this.setHomeButtonEnabled(true);
         this.setDisplayHomeAsUpEnabled(true);
-
-        this.scrollChatToBottom();
-
-        final InteractiveScrollView
-            chatScrollView = (InteractiveScrollView) findViewById(R.id.chat_scroll_view);
-
-        chatScrollView.setOnTopReachedListener(new ChatScrollOnTopListener(
-                    messages.messages[0].chatId
-                    ));
 
         EditText
             messageInput = (EditText) findViewById(R.id.input_message);
