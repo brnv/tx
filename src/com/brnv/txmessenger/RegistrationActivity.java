@@ -131,8 +131,6 @@ public class RegistrationActivity extends Activity {
 
     public View.OnClickListener setCodeButtonListener = new View.OnClickListener() {
         public void onClick(View v) {
-            v.setEnabled(false);
-
             EditText
                 codeInput = (EditText) findViewById(R.id.input_telegram_code);
 
