@@ -226,9 +226,14 @@ public class ChatsActivity extends Activity {
             chatsEntryUserInitials = (TextView)
             chatsEntryView.findViewById(R.id.user_initials);
 
-        chatsEntryUserInitials.setText(
-                String.valueOf(user.firstName.charAt(0)) +
-                String.valueOf(user.lastName.charAt(0)));
+        if (user.lastName.length() != 0) {
+            chatsEntryUserInitials.setText(
+                    String.valueOf(user.firstName.charAt(0)) +
+                    String.valueOf(user.lastName.charAt(0)));
+        } else {
+            chatsEntryUserInitials.setText(
+                    String.valueOf(user.firstName.charAt(0)));
+        }
 
         GradientDrawable
             userInitialsShape = (GradientDrawable) chatsEntryUserInitials.getBackground();
@@ -574,9 +579,15 @@ public class ChatsActivity extends Activity {
     }
 
     private int getUserColor(TdApi.User user) {
-        Integer index = (
-                user.firstName.charAt(0) * (
-                    user.lastName.charAt(0)+user.firstName.charAt(0))) % 7;
+        Integer index = 0;
+
+        if (user.lastName.length() != 0) {
+            index = (
+                    user.firstName.charAt(0) * (
+                        user.lastName.charAt(0)+user.firstName.charAt(0))) % 7;
+        } else {
+            index = user.firstName.charAt(0) % 7;
+        }
 
         Integer resourceId = R.color.tx_chat_list_entry_circle_background_0;
 
